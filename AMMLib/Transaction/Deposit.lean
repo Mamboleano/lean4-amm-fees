@@ -18,6 +18,8 @@ structure Deposit (s: Γ) (a: A) (t0 t1: T) (v0: ℝ>0) where
   hen0: v0 ≤ s.atoms.get a t0
   hen1: v0*(s.amms.r0 t0 t1 exi)/(s.mints.supply t0 t1) ≤ s.atoms.get a t1
 
+variable {s : Γ} {t0 t1 : T} {a : A} {v0 r0 r1: ℝ>0}
+
 -- The deposited amount v1:t1
 noncomputable def Deposit.v1 (d: Deposit s a t0 t1 v0): ℝ>0 :=
   v0*(s.amms.r0 t0 t1 d.exi)

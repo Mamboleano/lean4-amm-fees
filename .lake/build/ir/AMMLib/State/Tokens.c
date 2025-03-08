@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib.State.Tokens
-// Imports: Init Mathlib.Data.Nat.Basic Mathlib.Data.Finset.Basic Mathlib.Data.Sym.Sym2 Mathlib.Data.Finsupp.Defs Mathlib.Data.Real.NNReal Mathlib.Data.Finsupp.Basic HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction HelpersLib.Finsupp2
+// Imports: Init Mathlib HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction HelpersLib.Finsupp2
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -198,12 +198,7 @@ return x_6;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Nat_Basic(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finset_Basic(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Sym_Sym2(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Defs(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Real_NNReal(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Basic(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Subtraction(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_Finsupp2(uint8_t builtin, lean_object*);
@@ -215,22 +210,7 @@ _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Mathlib_Data_Nat_Basic(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finset_Basic(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Sym_Sym2(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Defs(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Real_NNReal(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Basic(builtin, lean_io_mk_world());
+res = initialize_Mathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_PReal_Basic(builtin, lean_io_mk_world());

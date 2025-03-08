@@ -4,6 +4,8 @@ import AMMLib.State.Networth
 import HelpersLib.PReal.Subtraction
 open NNReal
 
+variable {sx : SX} {s : Γ} {a : A} {t0 t1 : T} {v0 x: ℝ>0}
+
 @[simp] theorem swap_price_mint_diff
 (sw: Swap sx s a t0 t1 v0) (o: O)
 (t0' t1': T) (init: s.amms.init t0' t1')
@@ -80,8 +82,8 @@ theorem Swap.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
 
   ring_nf
   . rw [Γ.mintedprice_reorder]
-  . exact sw.exi.dif
   . rw [Γ.mintedprice_reorder]
+  . exact sw.exi.dif
 
 theorem Swap.swaprate_vs_exchrate
   (sw: Swap sx s a t0 t1 x) (o: O)

@@ -1,6 +1,4 @@
-import Mathlib.Data.Finsupp.Defs
-import Mathlib.Data.Real.NNReal
-import Mathlib.Data.Sym.Sym2
+import Mathlib
 import HelpersLib.NNReal
 import HelpersLib.Prod
 import HelpersLib.PReal.Basic

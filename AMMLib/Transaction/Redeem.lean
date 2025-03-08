@@ -18,6 +18,8 @@ structure Redeem (s: Γ) (a: A) (t0 t1: T) (v: ℝ>0) where
                     _ ≤ (s.mints.get a).get t0 t1 := hen0)
   ))
 
+variable {s : Γ} {t0 t1 : T} {a : A} {v r0 r1: ℝ>0}
+
 theorem Redeem.nodrain_toNNReal (d: Redeem s a t0 t1 v):
   v < s.mints.supply t0 t1 := by
     have nodrain := d.nodrain

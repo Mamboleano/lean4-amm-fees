@@ -14,6 +14,8 @@ structure Swap
   nodrain: v0*(sx v0 (s.amms.r0 t0 t1 exi) (s.amms.r1 t0 t1 exi))
            < (s.amms.r1 t0 t1 exi)
 
+variable {sx : SX} {s : Γ} {t0 t1 : T} {a : A} {v0 x x₀: ℝ>0}
+
 theorem Swap.singleton
   (sw0: Swap sx s a t0 t1 x)
   (sw1: Swap sx s a t0 t1 x):

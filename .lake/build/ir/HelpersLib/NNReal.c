@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: HelpersLib.NNReal
-// Imports: Init Mathlib.Data.Real.NNReal HelpersLib.PReal.Basic
+// Imports: Init Mathlib HelpersLib.PReal.Basic
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -50,7 +50,7 @@ return x_3;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Real_NNReal(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Basic(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_HelpersLib_NNReal(uint8_t builtin, lean_object* w) {
@@ -60,7 +60,7 @@ _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Mathlib_Data_Real_NNReal(builtin, lean_io_mk_world());
+res = initialize_Mathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_PReal_Basic(builtin, lean_io_mk_world());

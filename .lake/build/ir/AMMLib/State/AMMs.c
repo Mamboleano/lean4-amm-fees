@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib.State.AMMs
-// Imports: Init Mathlib.Data.Finsupp.Defs Mathlib.Data.Real.NNReal Mathlib.Data.Sym.Sym2 HelpersLib.NNReal HelpersLib.Prod HelpersLib.PReal.Basic HelpersLib.Finsupp2 AMMLib.State.Tokens AMMLib.State.AtomicWall
+// Imports: Init Mathlib HelpersLib.NNReal HelpersLib.Prod HelpersLib.PReal.Basic HelpersLib.Finsupp2 AMMLib.State.Tokens AMMLib.State.AtomicWall
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -13,12 +13,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+lean_object* l_Finsupp_instZero___rarg(lean_object*);
 lean_object* l_Pi_instZero___elambda__1___rarg(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_AMMs_r1(lean_object*, lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_AMMs_empty___lambda__1___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_AMMs_empty___lambda__1(lean_object*, lean_object*);
 static lean_object* l_AMMs_empty___closed__1;
-lean_object* l_Finsupp_zero___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_AMMs_empty;
 LEAN_EXPORT lean_object* l_AMMs_r0(lean_object*, lean_object*, lean_object*, lean_object*);
 extern lean_object* l_instNNRealZero;
@@ -34,7 +34,7 @@ _start:
 {
 lean_object* x_1; lean_object* x_2; 
 x_1 = l_instNNRealZero;
-x_2 = l_Finsupp_zero___rarg(x_1);
+x_2 = l_Finsupp_instZero___rarg(x_1);
 return x_2;
 }
 }
@@ -95,9 +95,7 @@ return x_8;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Defs(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Real_NNReal(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Sym_Sym2(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_NNReal(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_Prod(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Basic(uint8_t builtin, lean_object*);
@@ -112,13 +110,7 @@ _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Defs(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Real_NNReal(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Sym_Sym2(builtin, lean_io_mk_world());
+res = initialize_Mathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_NNReal(builtin, lean_io_mk_world());

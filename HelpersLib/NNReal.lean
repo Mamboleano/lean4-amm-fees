@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.NNReal
+import Mathlib
 import HelpersLib.PReal.Basic
 open NNReal
 

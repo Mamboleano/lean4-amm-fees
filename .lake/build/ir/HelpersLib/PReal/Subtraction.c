@@ -13,16 +13,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-lean_object* l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_1003_(lean_object*, lean_object*);
+lean_object* l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_657_(lean_object*, lean_object*);
+lean_object* l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_827_(lean_object*);
 LEAN_EXPORT lean_object* l_PReal_sub(lean_object*, lean_object*, lean_object*);
-lean_object* l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_826_(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_PReal_sub(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
 _start:
 {
 lean_object* x_4; lean_object* x_5; 
-x_4 = lean_alloc_closure((void*)(l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_1003_), 2, 1);
-lean_closure_set(x_4, 0, x_2);
-x_5 = l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_826_(x_1, x_4);
+x_4 = l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_827_(x_2);
+x_5 = l_Real_definition____x40_Mathlib_Data_Real_Basic___hyg_657_(x_1, x_4);
 return x_5;
 }
 }

@@ -13,6 +13,8 @@ structure Create (s: Γ) (t0 t1: T) (a: A) (v0 v1: ℝ>0) where
   hen0: v0 ≤ s.atoms.get a t0
   hen1: v1 ≤ s.atoms.get a t1
 
+variable {s : Γ} {t0 t1 : T} {a : A} {v0 v1 r0 r1: ℝ>0}
+
 noncomputable def Create.apply
 {s: Γ} (v: Create s t0 t1 a v0 v1): Γ :=
   ⟨

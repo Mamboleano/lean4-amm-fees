@@ -1,6 +1,4 @@
-import Mathlib.Data.Finsupp.Basic
-import Mathlib.Data.Finsupp.Defs
-import Mathlib.Tactic.LibrarySearch
+import Mathlib
 import HelpersLib.Prod
 
 -- If g gives you zero for an element,

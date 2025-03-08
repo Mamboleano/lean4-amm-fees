@@ -1,7 +1,4 @@
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Real.NNReal
-import Mathlib.Algebra.Order.Positive.Field
-import Mathlib.Algebra.Order.Positive.Ring
+import Mathlib
 open NNReal
 
 /- This code is mostly copied and adapted from NNReal. -/
@@ -80,7 +77,7 @@ theorem toReal_injective : Function.Injective toReal := Subtype.coe_injective
 theorem toNNReal_injective : Function.Injective toNNReal :=
   λ (x y) =>
   by intro h; unfold toNNReal at h;
-     rw [← NNReal.coe_eq] at h
+     rw [← NNReal.coe_inj] at h
      simp at h
      exact h
 
@@ -116,5 +113,5 @@ theorem add_div'' {α: Type}
 
 @[simp] theorem mk_toNNReal (x: ℝ) (h: 0 < x):
   ((⟨x, h⟩: ℝ>0): ℝ≥0) = (x.toNNReal) := by
-  rw [← NNReal.coe_eq]
+  rw [← NNReal.coe_inj]
   simp [max_eq_left_of_lt h]

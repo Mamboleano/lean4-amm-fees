@@ -1,14 +1,10 @@
-import Mathlib.Data.Finsupp.Defs
-import Mathlib.Data.Real.NNReal
-import Mathlib.Data.Sym.Sym2
-import Mathlib.Algebra.BigOperators.Finsupp
+import Mathlib
 import HelpersLib.NNReal
 import HelpersLib.Prod
 import HelpersLib.PReal.Basic
 import HelpersLib.PReal.Subtraction
 import HelpersLib.Finsupp2
 import AMMLib.State.Tokens
-import Mathlib.Tactic.LibrarySearch
 open NNReal
 
 -- Atomic token wallet

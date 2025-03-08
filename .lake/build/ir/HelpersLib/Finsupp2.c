@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: HelpersLib.Finsupp2
-// Imports: Init Mathlib.Data.Finsupp.Basic Mathlib.Data.Finsupp.Defs Mathlib.Tactic.LibrarySearch HelpersLib.Prod
+// Imports: Init Mathlib HelpersLib.Prod
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -119,9 +119,7 @@ return x_3;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Basic(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Defs(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Tactic_LibrarySearch(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_Prod(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_HelpersLib_Finsupp2(uint8_t builtin, lean_object* w) {
@@ -131,13 +129,7 @@ _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Basic(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Defs(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Tactic_LibrarySearch(builtin, lean_io_mk_world());
+res = initialize_Mathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_Prod(builtin, lean_io_mk_world());

@@ -1,5 +1,5 @@
 import HelpersLib.PReal.Basic
-import Mathlib.Data.Real.Sqrt
+import Mathlib
 
 namespace PReal
 

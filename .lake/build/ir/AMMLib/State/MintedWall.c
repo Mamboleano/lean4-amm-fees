@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib.State.MintedWall
-// Imports: Init Mathlib.Data.Finsupp.Defs Mathlib.Data.Real.NNReal Mathlib.Data.Sym.Sym2 Mathlib.Algebra.BigOperators.Finsupp HelpersLib.NNReal HelpersLib.Prod HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction HelpersLib.Finsupp2 AMMLib.State.Tokens AMMLib.State.AtomicWall
+// Imports: Init Mathlib HelpersLib.NNReal HelpersLib.Prod HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction HelpersLib.Finsupp2 AMMLib.State.Tokens AMMLib.State.AtomicWall
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -15,11 +15,11 @@ extern "C" {
 #endif
 LEAN_EXPORT lean_object* l_W_u2081_empty___lambda__1(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_W_u2081_empty;
+lean_object* l_Finsupp_instZero___rarg(lean_object*);
 lean_object* l_Pi_instZero___elambda__1___rarg(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_instZeroW_u2081;
 LEAN_EXPORT lean_object* l_W_u2081_get(lean_object*, lean_object*, lean_object*);
 static lean_object* l_W_u2081_empty___closed__1;
-lean_object* l_Finsupp_zero___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_W_u2081_empty___lambda__1___boxed(lean_object*, lean_object*);
 extern lean_object* l_instNNRealZero;
 LEAN_EXPORT lean_object* l_W_u2081_empty___lambda__1(lean_object* x_1, lean_object* x_2) {
@@ -34,7 +34,7 @@ _start:
 {
 lean_object* x_1; lean_object* x_2; 
 x_1 = l_instNNRealZero;
-x_2 = l_Finsupp_zero___rarg(x_1);
+x_2 = l_Finsupp_instZero___rarg(x_1);
 return x_2;
 }
 }
@@ -88,10 +88,7 @@ return x_7;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Finsupp_Defs(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Real_NNReal(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Data_Sym_Sym2(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Algebra_BigOperators_Finsupp(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_NNReal(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_Prod(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Basic(uint8_t builtin, lean_object*);
@@ -107,16 +104,7 @@ _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Mathlib_Data_Finsupp_Defs(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Real_NNReal(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Data_Sym_Sym2(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Algebra_BigOperators_Finsupp(builtin, lean_io_mk_world());
+res = initialize_Mathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_NNReal(builtin, lean_io_mk_world());

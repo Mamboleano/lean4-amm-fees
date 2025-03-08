@@ -15,22 +15,22 @@ inductive Tx (sx: SX) (init: Γ): Γ → Type where
   | empty: Tx sx init init
 
   -- Sequence with a valid Create at the end
-  | create (s': Γ) (rs: Tx sx init s')
+  | create {t0 t1 : T} {a : A} {r0 r1: ℝ>0} (s': Γ) (rs: Tx sx init s')
          (d0: Create s' t0 t1 a r0 r1):
       Tx sx init d0.apply
 
   -- Sequence with a valid Deposit at the end
-  | dep (s': Γ) (rs: Tx sx init s')
+  | dep {t0 t1 : T} {a : A} {v0: ℝ>0} (s': Γ) (rs: Tx sx init s')
         (d: Deposit s' a t0 t1 v0):
       Tx sx init d.apply
 
   -- Sequence with a valid Redeem at the end
-  | red (s': Γ) (rs: Tx sx init s')
+  | red {t0 t1 : T} {a : A} {v0: ℝ>0} (s': Γ) (rs: Tx sx init s')
         (r: Redeem s' a t0 t1 v0):
       Tx sx init r.apply
 
   -- Sequence with a valid Swap at the end
-  | swap (s': Γ) (rs: Tx sx init s')
+  | swap {t0 t1 : T} {a : A} {v0: ℝ>0} (s': Γ) (rs: Tx sx init s')
          (sw: Swap sx s' a t0 t1 v0):
       Tx sx init sw.apply
 
@@ -65,8 +65,7 @@ swap: use IH.
       swaps don't change minted token supplies
 -/
 
-set_option trace.Meta.Tactic.simp true
-
+variable {sx : SX} {s : Γ} {t0 t1 : T}
 
 /- If a state is reachable and an AMM has been initialized in it,
    then the supply of the AMM's minted token is greater than zero. -/
@@ -135,7 +134,7 @@ theorem AMMimpMintSupply (r: reachable sx s)
 
   -- Deposit to liquidity pool case: by cases
   -- on the deposited tokens t0' t1'. Similar to Creation.
-  | @dep a t0' t1' v0 sprev tail d ih =>
+  | @dep t0' t1' a v0 sprev tail d ih =>
       simp at h
       have re: reachable sx sprev := by
         exists init; exists tail
@@ -149,13 +148,13 @@ theorem AMMimpMintSupply (r: reachable sx s)
       -- incremented the supply.
       . rw [not_diffmint_iff_samemint _ _ _ _ d.exi.dif] at samemi
         rcases samemi with ⟨a,b⟩|⟨a,b⟩
-        . simp [a, b, d.v.zero_lt_toNNReal]
+        . simp [← a, ← b, d.v.zero_lt_toNNReal]
         . rw [S₁.supply_reorder _ t0 t1]
-          simp [a, b, d.v.zero_lt_toNNReal]
+          simp [← a, ← b, d.v.zero_lt_toNNReal]
 
 
   -- Redeem: by cases on the redeemed tokens.
-  | @red a t0' t1' v sprev tail d ih =>
+  | @red t0' t1' a v sprev tail d ih =>
       simp at h -- We can consider the previous state as initialized
       simp [Γ.mintsupply] -- Unfolding of the definition after the redeem
       have re: reachable sx sprev := by
@@ -247,7 +246,7 @@ theorem SuppAMMimpMintSupply (r: reachable sx s)
 
   -- Deposit to liquidity pool case: by cases
   -- on the deposited tokens t0' t1'. Similar to Creation.
-  | @dep a t0' t1' v0 sprev tail d ih =>
+  | @dep t0' t1' a v0 sprev tail d ih =>
       have re: reachable sx sprev := by
         exists init; exists tail
 
@@ -268,7 +267,7 @@ theorem SuppAMMimpMintSupply (r: reachable sx s)
 
 
   -- Redeem: by cases on the redeemed tokens.
-  | @red a t0' t1' v sprev tail d ih =>
+  | @red t0' t1' a v sprev tail d ih =>
       simp [Γ.mintsupply]
       have re: reachable sx sprev := by
         exists init; exists tail

@@ -272,5 +272,5 @@ theorem AMMs.eq_iff (amms amms': AMMs):
     simp at extfun
     simp
     ext t0 t1
-    rw [NNReal.coe_eq]
+    rw [NNReal.coe_inj]
     exact extfun t0 t1
