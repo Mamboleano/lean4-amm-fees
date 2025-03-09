@@ -12,5 +12,5 @@ theorem sqrt_to_real (x: ℝ>0): (x.sqrt: ℝ) = Real.sqrt (x: ℝ) := by rfl
 
 @[simp]
 theorem mul_self_sqrt (x: ℝ>0): x.sqrt * x.sqrt = x := by
-  rw [← toReal_eq_toReal_iff]
+  rw [toReal_eq_toReal_iff]
   exact Real.mul_self_sqrt x.2.le

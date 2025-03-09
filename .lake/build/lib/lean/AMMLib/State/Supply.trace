@@ -2,4 +2,4 @@
  [{"message":
    ".> LEAN_PATH=././.lake/packages/Cli/.lake/build/lib/lean:././.lake/packages/batteries/.lake/build/lib/lean:././.lake/packages/Qq/.lake/build/lib/lean:././.lake/packages/aesop/.lake/build/lib/lean:././.lake/packages/proofwidgets/.lake/build/lib/lean:././.lake/packages/importGraph/.lake/build/lib/lean:././.lake/packages/LeanSearchClient/.lake/build/lib/lean:././.lake/packages/plausible/.lake/build/lib/lean:././.lake/packages/mathlib/.lake/build/lib/lean:././.lake/build/lib/lean /Users/marcodessalvi/.elan/toolchains/leanprover--lean4---v4.18.0-rc1/bin/lean -Dpp.unicode.fun=true -DautoImplicit=false ././././AMMLib/State/Supply.lean -R ./././. -o ././.lake/build/lib/lean/AMMLib/State/Supply.olean -i ././.lake/build/lib/lean/AMMLib/State/Supply.ilean -c ././.lake/build/ir/AMMLib/State/Supply.c --json",
    "level": "trace"}],
- "depHash": "12148267992722958104"}
+ "depHash": "8153502247618552763"}

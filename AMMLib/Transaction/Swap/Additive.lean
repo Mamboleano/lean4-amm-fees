@@ -4,6 +4,8 @@ import AMMLib.Transaction.Swap.Networth
 import AMMLib.Transaction.Swap.Reversible
 open NNReal
 
+set_option maxHeartbeats 2000000
+
 variable {sx : SX} {s : Γ} {a : A} {t0 t1 : T} {v0 x₀ x₁: ℝ>0} {hbound: sx.outputbound}
 
 def SX.additive (sx: SX): Prop :=
@@ -40,23 +42,24 @@ def Swap.additive
     by
        -- Prove the AMM won't be drained, ie. that
        -- r1 in s is greater than sw0.y + sw1.y
-       -- unfold SX.additive at addi
-       -- have nodrain' := sw1.nodrain
-       -- rw [addi x₀ x₁ _ _ sw0.nodrain]
-       -- have sw1y := y_norm sw1
-       -- simp at sw1y
-       -- simp_rw [← y_norm sw0]
-       -- simp_rw [add_comm _ x₀]
-       -- simp_rw [← sw1y]
-       -- simp_rw [← y_norm sw1] at nodrain'
-       -- simp at nodrain'
-       -- have nodrain'' := OrderedAddCommGroup.add_lt_add_left nodrain' sw0.y
-       -- rw [add_comm, add_comm sw0.y, add_comm] at nodrain''
-       -- simp at nodrain''
-       -- rw [div_eq_mul_inv]
-       -- rw [mul_comm, mul_assoc]
-       -- simp [nodrain'']
-       all_goals sorry
+      unfold SX.additive at addi
+      have nodrain' := sw1.nodrain
+      rw [addi x₀ x₁ _ _ sw0.nodrain]
+      have sw1y := y_norm sw1
+      simp at sw1y
+      simp_rw [← y_norm sw0]
+      simp_rw [add_comm _ x₀]
+      rw [← sw1y]
+      simp_rw [← y_norm sw1] at nodrain'
+      simp at nodrain'
+      have nodrain'' := OrderedAddCommGroup.add_lt_add_left nodrain' sw0.y
+      rw [add_comm, add_comm sw0.y, add_comm] at nodrain''
+      simp at nodrain''
+      rw [div_eq_mul_inv]
+      rw [mul_comm, mul_assoc]
+      simp [nodrain'']
+
+      all_goals sorry
   ⟩
 
 def Swap.bound_split1
@@ -106,12 +109,13 @@ def Swap.bound_split2
     simp [y, right_distrib, rate]
     rw [addi _ _ _ _ sw0.nodrain]
     simp_rw [← y_norm sw0]
+    simp
     simp_rw [add_comm _ x₀]
     rw [div_eq_mul_inv]
     rw [← mul_assoc, ← mul_assoc]
     rw [← right_distrib, ← right_distrib]
     rw [mul_comm, ← mul_assoc]
-    simp
+    sorry
 
 @[simp] theorem Swap.additive_y'
   (sw0: Swap sx s a t0 t1 x₀)

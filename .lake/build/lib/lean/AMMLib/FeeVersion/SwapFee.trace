@@ -1,0 +1,17 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=././.lake/packages/Cli/.lake/build/lib/lean:././.lake/packages/batteries/.lake/build/lib/lean:././.lake/packages/Qq/.lake/build/lib/lean:././.lake/packages/aesop/.lake/build/lib/lean:././.lake/packages/proofwidgets/.lake/build/lib/lean:././.lake/packages/importGraph/.lake/build/lib/lean:././.lake/packages/LeanSearchClient/.lake/build/lib/lean:././.lake/packages/plausible/.lake/build/lib/lean:././.lake/packages/mathlib/.lake/build/lib/lean:././.lake/build/lib/lean /Users/marcodessalvi/.elan/toolchains/leanprover--lean4---v4.18.0-rc1/bin/lean -Dpp.unicode.fun=true -DautoImplicit=false ././././AMMLib/FeeVersion/SwapFee.lean -R ./././. -o ././.lake/build/lib/lean/AMMLib/FeeVersion/SwapFee.olean -i ././.lake/build/lib/lean/AMMLib/FeeVersion/SwapFee.ilean -c ././.lake/build/ir/AMMLib/FeeVersion/SwapFee.c --json",
+   "level": "trace"},
+  {"message":
+   "././././AMMLib/FeeVersion/SwapFee.lean:50:62: unused variable `o`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././AMMLib/FeeVersion/SwapFee.lean:63:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   "././././AMMLib/FeeVersion/SwapFee.lean:97:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   "././././AMMLib/FeeVersion/SwapFee.lean:109:2: 'ring_nf!' tactic does nothing\nnote: this linter can be disabled with `set_option linter.unusedTactic false`",
+   "level": "warning"}],
+ "depHash": "6594597766299533830"}

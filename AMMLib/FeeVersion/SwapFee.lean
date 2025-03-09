@@ -11,6 +11,7 @@ structure PRate where
 
 variable (φ : PRate)
 
+variable {sx : SX} {s : Γ} {a b: A} {t0 t1 : T} {v0 x: ℝ>0} {hbound: sx.outputbound}
 
 noncomputable def SX.fee_rate: SX :=
   λ (x r0 r1: ℝ>0) => (φ.val * r1)/(r0 + (φ.val * x))
@@ -35,7 +36,7 @@ theorem SwapFee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
   rw [W₁.worth_destruct _ (s.mintedprice o) t0 t1 _]
 
   have h': (sw.y: ℝ≥0) ≤ ((s.amms.r1 t0 t1 sw.exi): ℝ≥0) := by
-    rw [PReal.toNNReal_le_toNNReal_iff]
+    rw [← PReal.toNNReal_le_toNNReal_iff]
     simp [Swap.y, Swap.rate, le_of_lt sw.nodrain]
 
   simp [expandprice, sw.exi, sw.exi.dif, sw.exi.dif.symm,
@@ -43,8 +44,8 @@ theorem SwapFee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
 
   ring_nf
   . rw [Γ.mintedprice_reorder]
-  . exact sw.exi.dif
   . rw [Γ.mintedprice_reorder]
+  . exact sw.exi.dif
 
 theorem SwapFee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
   (s.atoms.get b)
@@ -92,6 +93,9 @@ theorem SwapFee.ext_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
 
   . exact h_dif
 
+syntax "nuclear" : tactic
+macro_rules
+  | `(tactic| nuclear) => `(tactic| (ring_nf; try field_simp; try ring_nf))
 
 theorem SX.fee_rate.outputbound: SX.outputbound (SX.fee_rate φ) := by
   unfold SX.outputbound
@@ -101,34 +105,36 @@ theorem SX.fee_rate.outputbound: SX.outputbound (SX.fee_rate φ) := by
   have : (r0: ℝ) > 0 := sorry
   have : (r1: ℝ) > 0 := sorry
   have : (φ.val: ℝ) > 0 := sorry
-  rw [← PReal.toReal_lt_toReal_iff]
+  rw [PReal.toReal_lt_toReal_iff]
+  nuclear
   simp
   -- positivity
   ring_nf
   ring_nf!
-  rw [mul_inv_lt_iff_lt_mul]
+  /-rw [mul_inv_lt_iff_lt_mul]
   nlinarith
   rw [div_eq_mul_inv, ← mul_assoc, mul_inv_lt_iff_lt_mul]
   rw [left_distrib, mul_comm r1 (φ.val * x)]
   rw [mul_comm φ.val x, mul_assoc]
-  exact PReal.lt_add_left _ _
+  exact PReal.lt_add_left _ _ -/
+  sorry
 
-theorem SX.constprod.homogeneous:
+theorem SX.fee_rate.constprod.homogeneous:
   homogeneous (fee_rate φ) := by
-  unfold homogeneous
+  unfold SX.homogeneous
   intro a x r0 r1
   unfold fee_rate
   rw [← mul_assoc, mul_comm φ.val a, mul_assoc]
   rw [← mul_assoc φ.val a x, mul_comm φ.val a, mul_assoc]
   rw [← left_distrib, div_eq_mul_inv, inv_mul', div_eq_mul_inv]
   rw [← mul_assoc, mul_assoc a (φ.val * r1) a⁻¹, mul_comm (φ.val*r1) a⁻¹, ← mul_assoc]
-  rw [mul_inv_self, one_mul]
+  rw [mul_inv_cancel, one_mul]
   rw [← div_eq_mul_inv]
 
 
 theorem SX.fee_rate.strictmono:
   strictmono (fee_rate φ) := by
-  unfold strictmono
+  unfold SX.strictmono
   intro x r0 r1 x' r0' r1'
   intro ⟨a,b,c⟩
   have a' : φ.val * x' ≤ φ.val * x := by simp [mul_le_mul, a]

@@ -1,3 +1,4 @@
+import AMMLib.FeeVersion.SwapFee
 import AMMLib.State.AMMs
 import AMMLib.State.AMMsNN
 import AMMLib.State.AtomicWall

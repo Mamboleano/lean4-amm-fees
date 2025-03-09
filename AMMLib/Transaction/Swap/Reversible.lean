@@ -27,10 +27,7 @@ def Swap.inv (sw: Swap sx s a t0 t1 v0)
     by simp [sw.exi.swap],
 
     -- Prove the reward won't drain the AMM
-    by unfold SX.outputbound at hbound
-       unfold SX.reversible at hrev
-       rw [AMMs.r0_reorder _ t1 t0, AMMs.r1_reorder _ t1 t0]
-       simp [hrev, y, rate]
+    by unfold SX.outputbound at hbound; aesop
   ⟩
 
 theorem Swap.rate_of_inv_eq_inv_rate (sw: Swap sx s a t0 t1 x)

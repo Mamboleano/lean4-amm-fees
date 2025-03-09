@@ -74,7 +74,7 @@ theorem Swap.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
   rw [W₁.worth_destruct _ (s.mintedprice o) t0 t1 _]
 
   have h': (sw.y: ℝ≥0) ≤ ((s.amms.r1 t0 t1 sw.exi): ℝ≥0) := by
-    rw [PReal.toNNReal_le_toNNReal_iff]
+    rw [← PReal.toNNReal_le_toNNReal_iff]
     simp [Swap.y, Swap.rate, le_of_lt sw.nodrain]
 
   simp [expandprice, sw.exi, sw.exi.dif, sw.exi.dif.symm,
@@ -93,12 +93,11 @@ theorem Swap.swaprate_vs_exchrate
   simp [Swap.self_gain_eq, hzero, Swap.y]
   rw [mul_assoc]
   rw [cmp_mul_pos_left x.toReal_pos (sw.rate*(o t1)) (o t0)]
-  rw [div_eq_mul_inv (o t0) (o t1)]
+  ring_nf!
   rw [← cmp_mul_pos_right
           (inv_pos_of_pos (o t1).toReal_pos)
           (sw.rate*(o t1)) (o t0)]
   rw [mul_inv_cancel_right₀ (o t1).toReal_ne_zero sw.rate]
-  exact PReal.toReal_cmp sw.rate ((o t0)*(o t1)⁻¹)
 
 theorem Swap.swaprate_vs_exchrate_lt
 (sw: Swap sx s a t0 t1 v0) (o: O)

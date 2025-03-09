@@ -17,7 +17,7 @@ def sub (x y: ℝ>0) (h: y < x): ℝ>0 :=
 @[simp] theorem sub_y_add_y (x y: ℝ>0) (h: y < x):
   x.sub y h + y = x := by
   unfold sub
-  rw [← toReal_eq_toReal_iff]
+  rw [toReal_eq_toReal_iff]
   simp
 
 @[simp] theorem add_y_sub_y (x y: ℝ>0) (h: y < x):
@@ -27,7 +27,7 @@ def sub (x y: ℝ>0) (h: y < x): ℝ>0 :=
 
 theorem mul_sub' (x y z: ℝ>0) (h: z < y):
   x*(y.sub z h) = (x*y).sub (x*z) (by simp [h]) := by
-    rw [← toReal_eq_toReal_iff]
+    rw [toReal_eq_toReal_iff]
     simp [mul_sub]
 
 theorem sub_mul' (x y z: ℝ>0) (h: z < y):
@@ -37,5 +37,5 @@ theorem sub_mul' (x y z: ℝ>0) (h: z < y):
 
 theorem div_sub_div_same' (x y z: ℝ>0) (h: y < x):
   (x/z).sub (y/z) (by simp [h]) = (x.sub y h)/z := by
-    rw [← toReal_eq_toReal_iff]
+    rw [toReal_eq_toReal_iff]
     simp [div_sub_div_same (x.toReal) y z]

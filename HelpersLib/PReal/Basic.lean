@@ -72,34 +72,34 @@ theorem zero_lt_toNNReal (x: ℝ>0): 0 < (x: ℝ≥0) :=
 theorem toReal_injective : Function.Injective toReal := Subtype.coe_injective
 
 @[simp] lemma toReal_eq_toReal_iff (x y: ℝ>0):
-  (x: ℝ) = (y: ℝ) ↔ x = y := toReal_injective.eq_iff
+  x = y ↔ (x: ℝ) = (y: ℝ) := toReal_injective.eq_iff.symm
 
 theorem toNNReal_injective : Function.Injective toNNReal :=
   λ (x y) =>
   by intro h; unfold toNNReal at h;
      rw [← NNReal.coe_inj] at h
      simp at h
-     exact h
+     aesop
 
-@[simp] lemma toNNReal_eq_toNNReal_iff (x y: ℝ>0):
+lemma toNNReal_eq_toNNReal_iff (x y: ℝ>0):
   (x: ℝ≥0) = (y: ℝ≥0) ↔ x = y := toNNReal_injective.eq_iff
 
 @[simp] lemma toReal_le_toReal_iff (x y: ℝ>0):
-  (x: ℝ) ≤ (y: ℝ) ↔ x ≤ y := by rfl
+  x ≤ y ↔ (x: ℝ) ≤ (y: ℝ) := by rfl
 
-@[simp] lemma toNNReal_le_toNNReal_iff (x y: ℝ>0):
-  (x: ℝ≥0) ≤ (y: ℝ≥0) ↔ x ≤ y := by rfl
+lemma toNNReal_le_toNNReal_iff (x y: ℝ>0):
+  x ≤ y ↔ (x: ℝ≥0) ≤ (y: ℝ≥0) := by rfl
 
 @[simp] lemma toReal_lt_toReal_iff (x y: ℝ>0):
-  (x: ℝ) < (y: ℝ) ↔ x < y := by rfl
+  x < y ↔ (x: ℝ) < (y: ℝ) := by rfl
 
-@[simp] lemma toNNReal_lt_toNNReal_iff (x y: ℝ>0):
+lemma toNNReal_lt_toNNReal_iff (x y: ℝ>0):
   (x: ℝ≥0) < (y: ℝ≥0) ↔ x < y := by rfl
 
 @[simp] lemma toReal_cmp (x y: ℝ>0):
-  cmp (x: ℝ) (y: ℝ) = cmp x y := by rfl
+  cmp x y = cmp (x: ℝ) (y: ℝ) := by rfl
 
-@[simp] lemma toNNReal_cmp (x y: ℝ>0):
+lemma toNNReal_cmp (x y: ℝ>0):
   cmp (x: ℝ≥0) (y: ℝ≥0) = cmp x y := by rfl
 
 theorem add_div'' {α: Type}

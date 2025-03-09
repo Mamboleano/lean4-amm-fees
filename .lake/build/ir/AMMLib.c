@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib
-// Imports: Init AMMLib.State.AMMs AMMLib.State.AMMsNN AMMLib.State.AtomicWall AMMLib.State.AtomicWallSet AMMLib.State.MintedWall AMMLib.State.MintedWallSet AMMLib.State.Networth AMMLib.State.State AMMLib.State.Supply AMMLib.State.Tokens AMMLib.Transaction.Create AMMLib.Transaction.Deposit AMMLib.Transaction.Redeem AMMLib.Transaction.Swap.Additive AMMLib.Transaction.Swap.Basic AMMLib.Transaction.Swap.Constprod AMMLib.Transaction.Swap.Networth AMMLib.Transaction.Swap.Rate AMMLib.Transaction.Swap.Reversible AMMLib.Transaction.Trace
+// Imports: Init AMMLib.FeeVersion.SwapFee AMMLib.State.AMMs AMMLib.State.AMMsNN AMMLib.State.AtomicWall AMMLib.State.AtomicWallSet AMMLib.State.MintedWall AMMLib.State.MintedWallSet AMMLib.State.Networth AMMLib.State.State AMMLib.State.Supply AMMLib.State.Tokens AMMLib.Transaction.Create AMMLib.Transaction.Deposit AMMLib.Transaction.Redeem AMMLib.Transaction.Swap.Additive AMMLib.Transaction.Swap.Basic AMMLib.Transaction.Swap.Constprod AMMLib.Transaction.Swap.Networth AMMLib.Transaction.Swap.Rate AMMLib.Transaction.Swap.Reversible AMMLib.Transaction.Trace
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
+lean_object* initialize_AMMLib_FeeVersion_SwapFee(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_State_AMMs(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_State_AMMsNN(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_State_AtomicWall(uint8_t builtin, lean_object*);
@@ -40,6 +41,9 @@ lean_object * res;
 if (_G_initialized) return lean_io_result_mk_ok(lean_box(0));
 _G_initialized = true;
 res = initialize_Init(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_AMMLib_FeeVersion_SwapFee(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_AMMLib_State_AMMs(builtin, lean_io_mk_world());
