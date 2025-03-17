@@ -15,6 +15,8 @@ import AMMLib.Transaction.Swap.Additive
 import AMMLib.Transaction.Swap.Basic
 import AMMLib.Transaction.Swap.Constprod
 import AMMLib.Transaction.Swap.Networth
-import AMMLib.Transaction.Swap.Rate
 import AMMLib.Transaction.Swap.Reversible
 import AMMLib.Transaction.Trace
+import AMMLib.FeeVersion.Swap.Additivity
+import AMMLib.FeeVersion.Swap.Basic
+import AMMLib.FeeVersion.Swap.Constprod

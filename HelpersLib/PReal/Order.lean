@@ -13,6 +13,14 @@ namespace PReal
   rw [add_comm y x]
   exact lt_add_right x y
 
+@[simp] theorem lt_add_iff_lt_cancel(x y z: ℝ>0):
+  x + z < x + y ↔ z < y := by
+  simp only [add_lt_add_iff_left]
+
+theorem lt_self_iff_mul_fact_lt_one(x y: ℝ>0):
+  x*y < x ↔ y < 1 := by
+  simp only [mul_lt_iff_lt_one_left']
+
 theorem gt_add_right (x y: ℝ>0):
   x+y > x := by
   simp only [gt_iff_lt]

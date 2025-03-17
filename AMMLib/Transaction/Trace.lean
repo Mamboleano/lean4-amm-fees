@@ -65,8 +65,6 @@ swap: use IH.
       swaps don't change minted token supplies
 -/
 
-set_option trace.Meta.Tactic.simp true
-
 
 /- If a state is reachable and an AMM has been initialized in it,
    then the supply of the AMM's minted token is greater than zero. -/
