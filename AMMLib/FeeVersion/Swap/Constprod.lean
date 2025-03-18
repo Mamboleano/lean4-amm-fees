@@ -77,10 +77,13 @@ theorem SX.fee.constprod.strictmono:
     rw [← div_eq_mul_inv, div_le_div_iff']
     exact mul_le_mul' c' h'
 
-theorem SX.fee.constprod.beta_simp (x y r0 r1: ℝ>0) (h: x*((SX.fee.constprod φ) x r0 r1) < r1):
+theorem SX.fee.constprod.beta_simp:
+  ∀ (x y r0 r1 : ℝ>0) (h: x*((SX.fee.constprod φ) x r0 r1) < r1),
   SX.fee.constprod φ y (r0 + x) (PReal.sub r1 (x * SX.fee.constprod φ x r0 r1) (h))
     = φ*r1*r0 / ((r0 + φ*x) * (r0 + x + φ*y))
     := by
+
+    intro x y r0 r1 h
 
     unfold SX.fee.constprod
     ring_nf!
@@ -103,9 +106,10 @@ theorem SX.fee.constprod.beta_simp (x y r0 r1: ℝ>0) (h: x*((SX.fee.constprod �
        lhs; rw [mul_comm x φ]
       simp
 
-theorem SX.fee.constprod.extended_additivity (x y r0 r1: ℝ>0) (ho : SX.outputbound (SX.fee.constprod φ)): SX.fee.extended_additivity φ (SX.fee.constprod φ) x y r0 r1 ho := by
+theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.fee.constprod φ) := by
 
   unfold extended_additivity
+  intro x y r0 r1 ho
   rw [SX.fee.z_eq_z_extended]
   unfold z_extended
   conv =>
@@ -159,7 +163,7 @@ theorem SX.fee.constprod.extended_additivity (x y r0 r1: ℝ>0) (ho : SX.outputb
   rw[left_distrib]
 
 
-theorem SX.fee.constprod.z_factor_gt_1 (x y r0: ℝ>0) (hφ : φ < 1):
+theorem SX.fee.constprod.z_factor_gt_1 (hφ : φ < 1):
   z φ x y r0 > 1 := by
 
   unfold z

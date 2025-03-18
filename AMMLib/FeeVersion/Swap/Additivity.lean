@@ -13,10 +13,12 @@ noncomputable def SX.fee.z_extended (x y r0 r1: ℝ>0) : ℝ>0 :=
     ((r0 + φ*x + φ*y) * ((φ*r1*x) * (r0 + x + φ*y) + (φ*r0*r1*y)))
 
 
-theorem SX.fee.z_eq_z_extended (x y r0 r1: ℝ>0) :
+theorem SX.fee.z_eq_z_extended :
+  ∀ (x y r0 r1: ℝ>0),
   z φ x y r0 = z_extended φ x y r0 r1 := by
 
   unfold z z_extended
+  intro x y r0 r1
 
   conv =>
     rhs
@@ -53,7 +55,8 @@ theorem SX.fee.z_eq_z_extended (x y r0 r1: ℝ>0) :
     rw [add_comm _ (x^2)]
 
 
-def SX.fee.extended_additivity (sx : SX) (x y r0 r1: ℝ>0) (ho : SX.outputbound sx) : Prop :=
+def SX.fee.extended_additivity (sx : SX) : Prop :=
+  ∀ (x y r0 r1: ℝ>0) (ho : SX.outputbound sx),
 
   sx (x+y) r0 r1 =
     ((x*(sx x r0 r1) + y*(sx y (r0+x) (r1.sub (x*(sx x r0 r1)) (by aesop)))) / (x + y)) * (z φ x y r0)
