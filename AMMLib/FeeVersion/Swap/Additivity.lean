@@ -3,29 +3,23 @@ import HelpersLib.PReal.Division
 
 variable (φ : ℝ>0)
 
-noncomputable def SX.fee.z (sw1: Swap sx s a t0 t1 x) (_ : Swap sx (sw1.apply) a t0 t1 y) : ℝ>0 :=
-
-  let r0 : ℝ>0 := (AMMs.r0 s.amms t0 t1 sw1.exi)
-
+noncomputable def SX.fee.z (x y r0: ℝ>0) : ℝ>0 :=
   (x + y) * (r0 + φ * x) * (r0 + x + φ * y) /
     ((r0 + φ * x + φ * y) * (x^2 + r0 * x + φ * x * y + r0 * y))
 
-noncomputable def SX.fee.z_extended (sw1: Swap sx s a t0 t1 x) (_ : Swap sx (sw1.apply) a t0 t1 y) : ℝ>0 :=
-
-  let r0 : ℝ>0 := (AMMs.r0 s.amms t0 t1 sw1.exi);
-  let r1 : ℝ>0 := (AMMs.r1 s.amms t0 t1 sw1.exi);
+noncomputable def SX.fee.z_extended (x y r0 r1: ℝ>0) : ℝ>0 :=
 
   (r0 + x + φ*y) * ((φ*r1*x) * (r0 + φ*x + φ*y) + (φ*r0*r1*y)) /
     ((r0 + φ*x + φ*y) * ((φ*r1*x) * (r0 + x + φ*y) + (φ*r0*r1*y)))
 
 
-theorem SX.fee.z_eq_z_extended (sw1: Swap sx s a t0 t1 x) (sw2: Swap sx (sw1.apply) a t0 t1 y) :
-  z φ sw1 sw2 = z_extended φ sw1 sw2 := by
+theorem SX.fee.z_eq_z_extended (x y r0 r1: ℝ>0) :
+  z φ x y r0 = z_extended φ x y r0 r1 := by
 
   unfold z z_extended
 
   conv =>
-    rhs; ext; ext;
+    rhs
     rw [mul_add (φ*r1*x) _ , mul_add (φ*r1*x) _ ]
     rw [mul_add (φ*r1*x) _, mul_add (φ*r1*x) _]
     rw [← left_distrib]
@@ -59,10 +53,7 @@ theorem SX.fee.z_eq_z_extended (sw1: Swap sx s a t0 t1 x) (sw2: Swap sx (sw1.app
     rw [add_comm _ (x^2)]
 
 
-def SX.fee.extended_additivity (sx : SX) (sw1: Swap sx s a t0 t1 x) (sw2: Swap sx (sw1.apply) a t0 t1 y) : Prop :=
-
-  let r0 : ℝ>0 := (AMMs.r0 s.amms t0 t1 sw1.exi);
-  let r1 : ℝ>0 := (AMMs.r1 s.amms t0 t1 sw1.exi);
+def SX.fee.extended_additivity (sx : SX) (x y r0 r1: ℝ>0) (ho : SX.outputbound sx) : Prop :=
 
   sx (x+y) r0 r1 =
-    ((x*(sx x r0 r1) + y*(sx y (r0+x) (r1.sub (x*(sx x r0 r1)) (sw1.nodrain)))) / (x + y)) * (z φ sw1 sw2)
+    ((x*(sx x r0 r1) + y*(sx y (r0+x) (r1.sub (x*(sx x r0 r1)) (by aesop)))) / (x + y)) * (z φ x y r0)

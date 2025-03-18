@@ -77,13 +77,10 @@ theorem SX.fee.constprod.strictmono:
     rw [← div_eq_mul_inv, div_le_div_iff']
     exact mul_le_mul' c' h'
 
-theorem SX.fee.constprod.beta_simp :
-  ∀ (x y r0 r1: ℝ>0) (h: x*((SX.fee.constprod φ) x r0 r1) < r1),
+theorem SX.fee.constprod.beta_simp (x y r0 r1: ℝ>0) (h: x*((SX.fee.constprod φ) x r0 r1) < r1):
   SX.fee.constprod φ y (r0 + x) (PReal.sub r1 (x * SX.fee.constprod φ x r0 r1) (h))
     = φ*r1*r0 / ((r0 + φ*x) * (r0 + x + φ*y))
     := by
-
-    intro x y r0 r1 h
 
     unfold SX.fee.constprod
     ring_nf!
@@ -106,23 +103,16 @@ theorem SX.fee.constprod.beta_simp :
        lhs; rw [mul_comm x φ]
       simp
 
-theorem SX.fee.constprod.extended_additivity (sw1: Swap (SX.fee.constprod φ) s a t0 t1 x) (sw2: Swap (SX.fee.constprod φ) (sw1.apply) a t0 t1 y): SX.fee.extended_additivity φ (SX.fee.constprod φ) sw1 sw2:= by
+theorem SX.fee.constprod.extended_additivity (x y r0 r1: ℝ>0) (ho : SX.outputbound (SX.fee.constprod φ)): SX.fee.extended_additivity φ (SX.fee.constprod φ) x y r0 r1 ho := by
 
   unfold extended_additivity
   rw [SX.fee.z_eq_z_extended]
   unfold z_extended
-  simp
-  set r0 := AMMs.r0 s.amms t0 t1 sw1.exi with hr0
-  set r1 := AMMs.r1 s.amms t0 t1 sw1.exi with hr1
-  simp_rw[←hr1]
-  repeat conv in (AMMs.r0 s.amms t0 t1 (_ : AMMs.init s.amms t0 t1)) =>
-      rw [← hr0]
   conv =>
     rhs
-
     rw [beta_simp]
     unfold SX.fee.constprod
-    repeat rw [← mul_div_assoc]
+    rw [← mul_div_assoc, ← mul_div_assoc, ← mul_div_assoc]
     rw [PReal.div_add_factor_num_den (x * (φ * r1)) _ (r0 + x + φ * y)]
 
     conv in _ + _ =>
@@ -168,12 +158,12 @@ theorem SX.fee.constprod.extended_additivity (sw1: Swap (SX.fee.constprod φ) s 
   simp
   rw[left_distrib]
 
-theorem SX.fee.constprod.z_factor_gt_1 (sw1: Swap (SX.fee.constprod φ) s a t0 t1 x) (sw2: Swap (SX.fee.constprod φ) (sw1.apply) a t0 t1 y) (hφ : φ < 1):
-  z φ sw1 sw2 > 1 := by
+
+theorem SX.fee.constprod.z_factor_gt_1 (x y r0: ℝ>0) (hφ : φ < 1):
+  z φ x y r0 > 1 := by
 
   unfold z
   simp
-  set r0 := AMMs.r0 s.amms t0 t1 sw1.exi
 
   conv =>
     lhs
