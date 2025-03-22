@@ -42,6 +42,13 @@ theorem SwapFee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
   . exact sw.exi.dif
   . rw [Γ.mintedprice_reorder]
 
+theorem Swap.fee.self_gain_no_mint_eq (sw: Swap sx s a t0 t1 x) (no_mint: (s.mints.get a).get t0 t1 = 0) (o: O) :
+  (a.gain o s sw.apply) = (sw.y*(o t1) - x*(o t0)) := by
+
+    rw [self_gain_eq]
+    simp [no_mint]
+
+
 theorem SX.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
   (s.atoms.get b)
   =
@@ -58,6 +65,18 @@ theorem SX.fee.swap_apply_amm_exi (sw: Swap sx s a t0 t1 x):
     unfold Swap.apply
     simp_all
     exact sw.exi
+
+theorem Swap.r0_after_swap (sw: Swap sx s a t0 t1 x):
+  (AMMs.r0 (apply sw).amms t0 t1 (by aesop; exact sw.exi)) =
+    (AMMs.r0 s.amms t0 t1 (sw.exi)) + x := by
+    simp
+    rw [add_comm]
+
+theorem Swap.r1_after_swap (sw: Swap sx s a t0 t1 x) :
+    (AMMs.r1 (apply sw).amms t0 t1 (by aesop; exact sw.exi)) =
+      (AMMs.r1 s.amms t0 t1 (sw.exi)).sub  (x * (sx x (AMMs.r0 s.amms t0 t1 (sw.exi)) (AMMs.r1 s.amms t0 t1 (sw.exi)))) (sw.nodrain):= by
+    simp [y, rate]
+
 
 theorem SwapFee.ext_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
   (b.gain o s sw.apply)
