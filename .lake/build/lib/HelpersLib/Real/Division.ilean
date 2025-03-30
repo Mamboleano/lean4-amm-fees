@@ -1,0 +1,1 @@
+{"version":1,"references":{"c:mul_div_mul_right":{"usages":[[6,20,6,37]],"definition":null},"c:mul_comm":{"usages":[[4,15,4,23],[6,6,6,14]],"definition":null},"c:div_add_div_comm_fact_denum":{"usages":[],"definition":[2,8,2,35]},"c:add_div":{"usages":[[4,6,4,13]],"definition":null},"c:Real":{"usages":[[2,47,2,48]],"definition":null}},"module":"HelpersLib.Real.Division"}

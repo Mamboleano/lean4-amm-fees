@@ -19,8 +19,6 @@ namespace PReal
 @[coe] def toReal : ℝ>0 → ℝ := Subtype.val
 instance : Coe ℝ>0 ℝ := ⟨toReal⟩
 
-
-
 @[coe] def toNNReal : ℝ>0 → NNReal := λ x => ⟨Subtype.val x, le_of_lt x.2⟩
 instance : Coe ℝ>0 NNReal := ⟨toNNReal⟩
 
@@ -30,6 +28,8 @@ theorem val_eq_toNNReal (n : ℝ>0) : n.val = n :=
   rfl
 
 theorem toReal_pos (x: ℝ>0): (0:ℝ) < x := x.2
+
+theorem eq_iff_toReal_eq (x y : ℝ>0) : x = y ↔ (↑x:ℝ) = (↑y:ℝ) := by aesop
 
 theorem toReal_ne_zero (x: ℝ>0)
 : (x: ℝ) ≠ 0 := (ne_of_lt x.toReal_pos).symm

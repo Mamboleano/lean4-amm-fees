@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: HelpersLib.PReal.Order
-// Imports: Init HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction
+// Imports: Init HelpersLib.PReal.Basic HelpersLib.PReal.Subtraction HelpersLib.PReal.Division
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -16,6 +16,7 @@ extern "C" {
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Subtraction(uint8_t builtin, lean_object*);
+lean_object* initialize_HelpersLib_PReal_Division(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_HelpersLib_PReal_Order(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -28,6 +29,9 @@ res = initialize_HelpersLib_PReal_Basic(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_PReal_Subtraction(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_HelpersLib_PReal_Division(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

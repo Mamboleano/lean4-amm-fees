@@ -1,3 +1,6 @@
+import Lean
+import Lean.Meta
+import Lean.Elab
 import AMMLib.Transaction.Swap.Rate
 import AMMLib.Transaction.Swap.Additive
 import AMMLib.Transaction.Swap.Reversible
@@ -6,7 +9,121 @@ import HelpersLib.PReal.Order
 import HelpersLib.PReal.Subtraction
 import HelpersLib.PReal.Division
 
+
 variable (φ : ℝ>0)
+
+open Lean Elab Tactic Meta
+open Lean Elab Tactic
+
+
+elab "custom_have " n:ident " : " t:term " := " v:term : tactic =>
+  withMainContext do
+    let t ← elabTerm t none
+    let v ← elabTermEnsuringType v t
+    liftMetaTactic fun mvarId => do
+      let mvarIdNew ← mvarId.assert n.getId t v
+      let (_, mvarIdNew) ← mvarIdNew.intro1P
+      return [mvarIdNew]
+
+elab "custom_let " n:ident " : " t:term " := " v:term : tactic =>
+  withMainContext do
+    let t ← elabTerm t none
+    let v ← elabTermEnsuringType v t
+    liftMetaTactic fun mvarId => do
+      let mvarIdNew ← mvarId.define n.getId t v
+      let (_, mvarIdNew) ← mvarIdNew.intro1P
+      return [mvarIdNew]
+
+elab "set_and_subst_reserves" amms:ident t0:ident t1:ident proof:ident : tactic =>
+  withMainContext do
+    let r0_id := mkIdent `r0
+    let r1_id := mkIdent `r1
+    let hr0_id := mkIdent `hr0
+    let hr1_id := mkIdent `hr1
+
+    evalTactic (← `(tactic| custom_let $r0_id : (ℝ>0) := AMMs.r0 $amms $t0 $t1 $proof))
+    evalTactic (← `(tactic| custom_let $r1_id : (ℝ>0) := AMMs.r1 $amms $t0 $t1 $proof))
+    evalTactic (← `(tactic| have $hr0_id : $r0_id = AMMs.r0 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1) := by rfl))
+    evalTactic (← `(tactic| have $hr1_id : $r1_id = AMMs.r1 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1) := by rfl))
+
+    evalTactic (← `(tactic| repeat conv in (AMMs.r0 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1)) =>
+                                    rw [←$hr0_id]))
+    evalTactic (← `(tactic| repeat conv in (AMMs.r1 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1)) =>
+                                    rw [←$hr1_id]))
+
+elab "set_and_subst_α_β" sw0:ident sw1:ident : tactic =>
+  withMainContext do
+    let α_id := mkIdent `α
+    let β_id := mkIdent `β
+    let hα_id := mkIdent `hα
+    let hβ_id := mkIdent `hβ
+
+    evalTactic (← `(tactic| custom_let $α_id : (ℝ>0) := Swap.rate $sw0))
+    evalTactic (← `(tactic| custom_let $β_id : (ℝ>0) := Swap.rate $sw1))
+    evalTactic (← `(tactic| have $hα_id : $α_id = Swap.rate $sw0 := by rfl))
+    evalTactic (← `(tactic| have $hβ_id : $β_id = Swap.rate $sw1 := by rfl))
+
+    evalTactic (← `(tactic| repeat conv in (Swap.rate $sw0) =>
+                                    rw [←$hα_id]))
+    evalTactic (← `(tactic| repeat conv in (Swap.rate $sw1) =>
+                                    rw [←$hβ_id]))
+
+
+
+elab "set_reserves" amms:ident t0:ident t1:ident proof:ident : tactic =>
+  withMainContext do
+    -- Create the expression for r0 using the given identifiers
+    -- Define the type of r0 (assuming it's ℝ>0, or something similar)
+    let r0_type ← elabTerm (← `((ℝ>0))) none
+    let r0_expr ← elabTermEnsuringType (← `((AMMs.r0 $amms $t0 $t1 $proof))) r0_type
+
+    -- Create the expression for r1 in a similar manner
+    -- Define the type of r1 (again assuming ℝ>0, or similar)
+    let r1_type ← elabTerm (← `((ℝ>0))) none
+    let r1_expr ← elabTermEnsuringType (← `((AMMs.r1 $amms $t0 $t1 $proof))) r1_type
+
+    -- Now define r0 in the context
+    liftMetaTactic fun mvarId => do
+      -- This is where we correctly use `MVarId.define` to define r0 with its type
+      let mvarId' ← mvarId.define `r0 r0_type r0_expr
+      let (_, mvarId') ← mvarId'.intro1P
+
+      return [mvarId']
+
+    -- Define r1 in the context
+    liftMetaTactic fun mvarId => do
+      -- Similarly, define r1 with its type
+      let mvarId' ← mvarId.define `r1 r1_type r1_expr
+      let (_, mvarId') ← mvarId'.intro1P
+      return [mvarId']
+
+elab "set_reserves_with_eqs" amms:ident t0:ident t1:ident proof:ident : tactic =>
+  withMainContext do
+    -- Step 1: Execute `set_reserves` to introduce `r0` and `r1`
+    evalTactic (← `(tactic| set_reserves $amms $t0 $t1 $proof))
+
+    -- Step 2: Retrieve `r0` and `r1` from the context
+    let r0_id := mkIdent `r0
+    let r1_id := mkIdent `r1
+    let hr0_id := mkIdent `hr0
+    let hr1_id := mkIdent `hr1
+
+    -- Step 3: Add `have hr0 : r0 = ... := by rfl`
+    evalTactic (← `(tactic| have $hr0_id : $r0_id = AMMs.r0 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1) := by rfl))
+
+    -- Step 4: Add `have hr1 : r1 = ... := by rfl`
+    evalTactic (← `(tactic| have $hr1_id : $r1_id = AMMs.r1 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1) := by rfl))
+
+
+elab "subst_reserves" amms:ident t0:ident t1:ident : tactic =>
+  withMainContext do
+    let hr0_id := mkIdent `hr0
+    let hr1_id := mkIdent `hr1
+
+    evalTactic (← `(tactic| repeat conv in (AMMs.r0 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1)) =>
+                                    rw [←$hr0_id]))
+    evalTactic (← `(tactic| repeat conv in (AMMs.r1 $amms $t0 $t1 (_ : AMMs.init $amms $t0 $t1)) =>
+                                    rw [←$hr1_id]))
 
 open NNReal
 

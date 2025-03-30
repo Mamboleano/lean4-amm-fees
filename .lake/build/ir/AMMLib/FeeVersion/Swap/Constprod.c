@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib.FeeVersion.Swap.Constprod
-// Imports: Init AMMLib.FeeVersion.Swap.Basic AMMLib.FeeVersion.Swap.Additivity HelpersLib.PReal.Division HelpersLib.PReal.Multiplication
+// Imports: Init AMMLib.FeeVersion.Swap.Basic AMMLib.FeeVersion.Swap.Additivity HelpersLib.Real.Division HelpersLib.Real.Order HelpersLib.Real.Subtraction HelpersLib.PReal.Division HelpersLib.PReal.Multiplication
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -16,6 +16,9 @@ extern "C" {
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_FeeVersion_Swap_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_FeeVersion_Swap_Additivity(uint8_t builtin, lean_object*);
+lean_object* initialize_HelpersLib_Real_Division(uint8_t builtin, lean_object*);
+lean_object* initialize_HelpersLib_Real_Order(uint8_t builtin, lean_object*);
+lean_object* initialize_HelpersLib_Real_Subtraction(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Division(uint8_t builtin, lean_object*);
 lean_object* initialize_HelpersLib_PReal_Multiplication(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
@@ -30,6 +33,15 @@ res = initialize_AMMLib_FeeVersion_Swap_Basic(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_AMMLib_FeeVersion_Swap_Additivity(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_HelpersLib_Real_Division(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_HelpersLib_Real_Order(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_HelpersLib_Real_Subtraction(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_HelpersLib_PReal_Division(builtin, lean_io_mk_world());
