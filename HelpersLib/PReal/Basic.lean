@@ -72,6 +72,9 @@ theorem zero_lt_toNNReal (x: ℝ>0): 0 < (x: ℝ≥0) :=
 @[simp] lemma inv_toNNReal (x: ℝ>0):
   ((x⁻¹): ℝ>0) = (x: ℝ≥0)⁻¹ := by rfl
 
+lemma sq_toReal (x: ℝ>0):
+  ((x ^ 2): ℝ>0) = (x: ℝ) ^ 2 := by rfl
+
 theorem toReal_injective : Function.Injective toReal := Subtype.coe_injective
 
 @[simp] lemma toReal_eq_toReal_iff (x y: ℝ>0):
@@ -118,3 +121,6 @@ theorem add_div'' {α: Type}
   ((⟨x, h⟩: ℝ>0): ℝ≥0) = (x.toNNReal) := by
   rw [← NNReal.coe_eq]
   simp [max_eq_left_of_lt h]
+
+theorem toReal_one_eq_Real_one :
+  (↑(1 : ℝ>0) : ℝ) = (1 : ℝ) := by rfl

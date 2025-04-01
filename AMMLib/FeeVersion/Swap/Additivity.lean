@@ -13,6 +13,17 @@ noncomputable def SX.fee.z_extended (x y r0 r1: ℝ>0) : ℝ>0 :=
   (r0 + x + φ*y) * ((φ*r1*x) * (r0 + φ*x + φ*y) + (φ*r0*r1*y)) /
     ((r0 + φ*x + φ*y) * ((φ*r1*x) * (r0 + x + φ*y) + (φ*r0*r1*y)))
 
+theorem SX.fee.z_toReal
+  (x y r0: ℝ>0):
+  (↑(z φ x y r0) : ℝ) =
+    (↑x + ↑y) * (↑r0 + ↑φ * ↑x) * (↑r0 + ↑x + ↑φ * ↑y) /
+    ((↑r0 + ↑φ * ↑x + ↑φ * ↑y) * (↑x^2 + ↑r0 * ↑x + ↑φ * ↑x * ↑y + ↑r0 * ↑y)) := by
+    unfold z
+    rw [PReal.div_toReal]
+    repeat rw [PReal.mul_toReal]
+    repeat rw [PReal.add_toReal]
+    repeat rw [PReal.mul_toReal]
+    rw [PReal.sq_toReal]
 
 theorem SX.fee.z_eq_z_extended :
   ∀ (x y r0 r1: ℝ>0),

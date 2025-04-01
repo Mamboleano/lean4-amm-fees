@@ -52,6 +52,115 @@ theorem SX.fee.arbitrage.constprod.solution_less
     rw [add_assoc, lt_add_iff_pos_right]
     exact gain_ε_pos
 
+theorem SX.fee.arbitrage.αx₀_add_βx₁_simp
+  (sw0: Swap (constprod φ) s a t0 t1 x₀)
+  (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
+    ((↑x₀ * ↑(Swap.rate sw0) + ↑x₁ * ↑(Swap.rate sw1)): ℝ) =
+      ((↑φ * ↑(AMMs.r1 s.amms t0 t1 sw0.exi)) * (↑x₀ ^ 2 + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₁)) /
+        ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑x₀ + ↑φ * ↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀))  := by sorry
+
+
+theorem SX.fee.arbitrage.z_sub_one_simp
+  (sw0: Swap (constprod φ) s a t0 t1 x₀)
+  (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
+    (↑(z φ x₀ x₁ (AMMs.r0 s.amms t0 t1 sw0.exi)) : ℝ) - ↑(1 : ℝ>0) =
+      - ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) *  ↑x₀ * ↑x₁ * (↑φ - ↑(1 : ℝ>0))) /
+          ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀ + ↑φ * ↑x₁) * (↑x₀ ^ 2 + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₁))) := by
+
+        rw [SX.fee.z_toReal]
+        set_and_subst_reserves s.amms t0 t1 sw0.exi
+        have den_ne_zero : ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁) * (↑x₀ ^ 2 + ↑r0 * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑r0 * ↑x₁) : ℝ) ≠ 0 := by
+          rw [←PReal.sq_toReal]
+          repeat rw [←PReal.mul_toReal]
+          repeat rw [←PReal.add_toReal]
+          repeat rw [←PReal.mul_toReal]
+          exact PReal.toReal_ne_zero _
+        conv =>
+          lhs
+          rw [PReal.toReal_one_eq_Real_one]
+          rw [div_sub_one den_ne_zero]
+
+        conv in _ - _=>
+          enter [1]
+          rw [mul_assoc]
+          rw [right_distrib, ←mul_assoc (↑x₁ : ℝ), left_distrib (↑x₁ : ℝ), right_distrib ((↑x₁ : ℝ)*r0) _ _]
+          conv in (↑x₁ : ℝ) * r0 * (r0 + (↑x₀ : ℝ) + φ * (↑x₁ : ℝ)) =>
+            rw [add_comm (r0 : ℝ) (↑x₀ : ℝ)]
+            rw [add_assoc, left_distrib, mul_comm (↑x₁ : ℝ) (r0 : ℝ)]
+          rw [←add_assoc, ←add_assoc, add_comm _ ((r0 : ℝ)*(↑x₁ : ℝ)*(↑x₀ : ℝ))]
+          conv in (↑x₀ : ℝ)*(_*_) =>
+            rw [←mul_assoc, mul_comm (↑x₀ : ℝ), mul_assoc, left_distrib, left_distrib (↑x₀ : ℝ), ←sq]
+            rw [add_comm _ ((↑x₀ : ℝ)^2), mul_comm (↑x₀ : ℝ) r0, ←mul_assoc (↑x₀ : ℝ) φ (↑x₁ : ℝ), mul_comm (↑x₀ : ℝ) φ]
+          conv in (↑x₁ : ℝ) * (φ * (↑x₀ : ℝ)) * (r0 + (↑x₀ : ℝ) + φ * (↑x₁ : ℝ)) =>
+            rw [←mul_assoc, mul_assoc, left_distrib, left_distrib (↑x₀ : ℝ)]
+            rw [add_comm _ ((↑x₀ : ℝ)*(↑x₀ : ℝ)), ←sq, mul_comm (↑x₀ : ℝ) r0, ←mul_assoc (↑x₀ : ℝ) φ (↑x₁ : ℝ), mul_comm (↑x₀ : ℝ) φ]
+          rw [add_assoc, add_assoc, add_comm (r0 * (↑x₁ : ℝ) * (r0 + φ * (↑x₁ : ℝ))) _ , ← add_assoc _ _ (r0 * (↑x₁ : ℝ) * (r0 + φ * (↑x₁ : ℝ)))]
+          rw [←right_distrib, mul_comm (↑x₁ : ℝ) φ, ←add_assoc, add_rotate, mul_comm (r0*(↑x₁ : ℝ))]
+
+        conv in _ - _=>
+          enter [2]
+          rw [add_comm (r0 : ℝ) ((φ : ℝ)*(↑x₀ : ℝ)), add_assoc, right_distrib]
+          rw [left_distrib]
+          conv in φ * (↑x₀ : ℝ) * (r0 * (↑x₁ : ℝ)) =>
+            rw [mul_comm (φ: ℝ) (↑x₀ : ℝ), mul_comm, ←mul_assoc]
+          rw [add_comm _ (r0*(↑x₁ : ℝ)*(↑x₀ : ℝ)*φ)]
+          rw [left_distrib (r0 + φ*(↑x₁ : ℝ))]
+          rw [add_assoc, ← add_assoc (φ * (↑x₀ : ℝ) * ((↑x₀ : ℝ) ^ 2 + r0 * (↑x₀ : ℝ) + φ * (↑x₀ : ℝ) * (↑x₁ : ℝ))) _ _, ← right_distrib, ←add_assoc (φ*(↑x₀ : ℝ)), add_comm (φ*(↑x₀ : ℝ))]
+          rw [←add_assoc, add_comm (r0*(↑x₁ : ℝ)*(↑x₀ : ℝ)*φ)]
+          rw [add_assoc, add_comm (r0*(↑x₁ : ℝ)*(↑x₀ : ℝ)*φ), ←add_assoc]
+
+        conv in _ / _ =>
+          enter [1]
+          simp
+          rw [←hr0]
+          conv =>
+            enter [1]
+            rw [←mul_one (↑r0 * ↑x₁ * ↑x₀ : ℝ)]
+            rw [←PReal.toReal_one_eq_Real_one]
+          rw [sub_eq_neg_sub_inv]
+          rw [←mul_sub]
+          rw [mul_assoc (↑r0 : ℝ), mul_comm (↑x₁ : ℝ), ←mul_assoc]
+        rw [neg_div]
+
+theorem SX.fee.arbitrage.z_sub_one_α_β_simp
+  (sw0: Swap (constprod φ) s a t0 t1 x₀)
+  (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
+    (↑((z φ x₀ x₁ (AMMs.r0 s.amms t0 t1 sw0.exi)) : ℝ) - (↑(1: ℝ>0))) * ((↑x₀ : ℝ) * (↑(Swap.rate sw0) : ℝ) + (↑x₁ : ℝ) * ((Swap.rate sw1) : ℝ)) =
+      - ((↑φ * ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑(AMMs.r1 s.amms t0 t1 sw0.exi) * ↑x₀ * ↑x₁ * (↑φ - ↑1)) /
+        ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀ + ↑φ*↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑x₀ + ↑φ*↑x₁))) := by
+
+
+    set_and_subst_reserves s.amms t0 t1 sw0.exi
+    set_and_subst_α_β sw0 sw1
+
+    have h_z_sub_1 := z_sub_one_simp φ sw0 sw1
+    conv at h_z_sub_1 =>
+      repeat rw [←hr0]
+      repeat rw [←hr1]
+
+    have h_αx₀_add_βx₁ := αx₀_add_βx₁_simp φ sw0 sw1
+    conv at h_αx₀_add_βx₁ =>
+      repeat rw [←hr0]
+      repeat rw [←hr1]
+      rw [←hβ]
+      rw [←hα]
+
+    have den_fact_ne_zero : ((↑x₀ ^ 2 + ↑r0 * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑r0 * ↑x₁) : ℝ) ≠ 0 := by
+      rw [←PReal.sq_toReal, ←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
+      exact PReal.toReal_ne_zero _
+    rw [h_z_sub_1, h_αx₀_add_βx₁]
+    rw [min_div_mul_div_simp_comm_fact den_fact_ne_zero]
+    rw [mul_comm _ ((↑r0 + ↑φ * ↑x₀) : ℝ), ←mul_assoc _ ((↑r0 + ↑φ * ↑x₀) : ℝ)]
+
+    have hh : (↑r0 * ↑x₀ * ↑x₁ * (↑φ - ↑(1 : ℝ>0)) * (↑φ * ↑r1) : ℝ) = (↑φ * ↑r0 * ↑r1 * ↑x₀ * ↑x₁ * (↑φ - ↑1) : ℝ) := by
+      conv =>
+        lhs
+        rw [mul_comm, ←mul_assoc, ←mul_assoc _ _ (↑x₁ : ℝ), ←mul_assoc]
+        rw [mul_assoc (↑φ : ℝ), mul_comm (↑r1 : ℝ), ←mul_assoc]
+
+    rw [hh]
+
+
 theorem SX.fee.arbitrage.big_factor_simp
   (sw0: Swap (constprod φ) s a t0 t1 x₀)
   (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁)
@@ -65,12 +174,43 @@ theorem SX.fee.arbitrage.big_factor_simp
 
     have hx₁β := SX.fee.constprod.beta_simp_rate φ sw0 sw1
 
+    rw [PReal.eq_iff_toReal_eq] at hx₁β
+    simp at hx₁β
     conv at hx₁β =>
       repeat rw [←hr0]
       repeat rw [←hr1]
       rw [←hβ]
 
-    sorry
+    have hzαβ := SX.fee.arbitrage.z_sub_one_α_β_simp φ sw0 sw1
+
+    conv at hzαβ =>
+      repeat rw [←hr0]
+      repeat rw [←hr1]
+      rw [←hβ]
+      rw [←hα]
+
+    rw [hzαβ, hx₁β, ←sub_eq_add_neg]
+    have hd_ne_zero : ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁): ℝ) ≠ 0 := by
+      rw [←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
+      exact PReal.toReal_ne_zero _
+    have hc_ne_zero: ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ) ≠ 0 := by
+      rw [←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
+      exact PReal.toReal_ne_zero _
+
+    conv in _ / _ =>
+      enter [1]
+      rw [mul_assoc _ ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁) : ℝ)]
+      rw [div_sub_div_comm_fact_denum hd_ne_zero]
+      rw [mul_assoc _ (↑r1 : ℝ) _, mul_comm (↑r1 : ℝ), ←mul_assoc]
+      rw [mul_assoc _ (↑x₀ : ℝ) _ , mul_comm (↑x₀: ℝ) _, ←mul_assoc, mul_assoc _ (↑x₀ : ℝ)]
+      rw [←mul_sub, mul_sub (↑x₀ : ℝ), mul_one, mul_comm (↑x₀ : ℝ), sub_sub_eq_add_sub]
+      rw [add_sub_comm', add_sub_comm', add_sub_assoc, sub_self, add_zero]
+      rw [add_assoc, add_comm _ (↑x₀ : ℝ), ←add_assoc, mul_comm]
+      rw [mul_assoc ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ)]
+      rw [mul_div_mul_left _ _ hc_ne_zero]
+      rw [mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ)]
+    rw [div_div]
+    rw [mul_div_mul_right _ _ (PReal.toReal_ne_zero _)]
 
 theorem SX.fee.arbitrage.int_rate_simp
   (x₁ : ℝ>0)
