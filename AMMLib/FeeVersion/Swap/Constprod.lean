@@ -103,6 +103,17 @@ theorem SX.fee.φ_r1_sub_α_x_simp :
       lhs; rw [mul_comm x φ]
     simp
 
+theorem SX.fee.constprod.rate_toReal
+  (sw0: Swap (constprod φ) s a t0 t1 x₀):
+    (↑(Swap.rate sw0) : ℝ) =
+      (↑φ * ↑(AMMs.r1 s.amms t0 t1 sw0.exi) /
+          (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀)) := by
+
+    unfold Swap.rate
+    unfold constprod
+    set_and_subst_reserves s.amms t0 t1 sw0.exi
+
+
 
 theorem SX.fee.constprod.beta_simp:
   ∀ (x y r0 r1 : ℝ>0) (h: x*((SX.fee.constprod φ) x r0 r1) < r1),
@@ -120,7 +131,7 @@ theorem SX.fee.constprod.beta_simp:
 theorem SX.fee.constprod.beta_simp_rate
   (sw0: Swap (constprod φ) s a t0 t1 x₀)
   (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
-  ↑x₁ * ↑(Swap.rate sw1)
+  x₁ * (Swap.rate sw1)
     = φ*(AMMs.r1 s.amms t0 t1 sw0.exi)*(AMMs.r0 s.amms t0 t1 sw0.exi)*x₁ / (((AMMs.r0 s.amms t0 t1 sw0.exi) + φ*x₀) * ((AMMs.r0 s.amms t0 t1 sw0.exi) + x₀ + φ*x₁)) := by
 
     conv =>

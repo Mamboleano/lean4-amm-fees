@@ -57,12 +57,40 @@ theorem SX.fee.arbitrage.αx₀_add_βx₁_simp
   (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
     ((↑x₀ * ↑(Swap.rate sw0) + ↑x₁ * ↑(Swap.rate sw1)): ℝ) =
       ((↑φ * ↑(AMMs.r1 s.amms t0 t1 sw0.exi)) * (↑x₀ ^ 2 + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₁)) /
-        ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑x₀ + ↑φ * ↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀))  := by sorry
+        ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑x₀ + ↑φ * ↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀))  := by
+
+        conv in ((↑x₁ : ℝ) * ↑(Swap.rate sw1)) =>
+          rw [←PReal.mul_toReal]
+          rw [SX.fee.constprod.beta_simp_rate _ _ _]
+          rw [PReal.div_toReal]
+          repeat rw [PReal.mul_toReal]
+          repeat rw [PReal.add_toReal]
+          repeat rw [PReal.mul_toReal]
+
+        conv in ((↑x₀  : ℝ) * ↑(Swap.rate sw0)) =>
+          rw [SX.fee.constprod.rate_toReal]
+          rw [mul_div]
+
+        set_and_subst_reserves s.amms t0 t1 sw0.exi
+        have den_f_ne_zero : ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ) ≠ 0 := by
+          repeat rw [←PReal.mul_toReal]
+          repeat rw [←PReal.add_toReal]
+          exact PReal.toReal_ne_zero _
+
+        rw [div_add_div_comm_fact_denum den_f_ne_zero]
+        rw [mul_comm (↑x₀ : ℝ), mul_assoc _ (↑x₀ : ℝ) _ , mul_assoc _ (↑r0 : ℝ) _, ←left_distrib]
+        rw [mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ)]
+        conv in (↑x₀ * (↑r0 + ↑x₀ + ↑φ * ↑x₁) + ↑r0 * ↑x₁) =>
+          rw [left_distrib, left_distrib]
+          rw [←sq]
+          rw [←mul_assoc, mul_comm (↑x₀ : ℝ) ↑φ]
+          rw [mul_comm (↑x₀ : ℝ)]
+          rw [add_comm _ (↑x₀ ^ 2 : ℝ)]
 
 
 theorem SX.fee.arbitrage.z_sub_one_simp
   (sw0: Swap (constprod φ) s a t0 t1 x₀)
-  (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
+  (_ : Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁):
     (↑(z φ x₀ x₁ (AMMs.r0 s.amms t0 t1 sw0.exi)) : ℝ) - ↑(1 : ℝ>0) =
       - ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) *  ↑x₀ * ↑x₁ * (↑φ - ↑(1 : ℝ>0))) /
           ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ * ↑x₀ + ↑φ * ↑x₁) * (↑x₀ ^ 2 + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₀ + ↑φ * ↑x₀ * ↑x₁ + ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑x₁))) := by
