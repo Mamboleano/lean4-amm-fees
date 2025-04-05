@@ -19,3 +19,8 @@ theorem min_div_mul_div_simp_comm_fact {a b c d e: ℝ} (hc : c ≠ 0) :
   ring_nf!
   rw [mul_assoc _ c, mul_inv_cancel, mul_one]
   exact hc
+
+theorem mul_div_cancel_den {a b c : ℝ} (ha : a ≠ 0): a * (b / (a * c)) = b / c := by
+  ring_nf!
+  rw [mul_assoc a, mul_comm b, ←mul_assoc]
+  simp [ha]

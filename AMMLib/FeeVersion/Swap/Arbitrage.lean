@@ -17,6 +17,9 @@ def SX.fee.arbitrage.is_solution_more (sw: Swap sx s a t0 t1 x₀) (o: O): Prop 
   ∀ (x: ℝ>0) (sw2: Swap sx s a t0 t1 x),
   x > x₀ → (s.mints.get a).get t0 t1 = 0 → (a.gain o s sw2.apply <  a.gain o s sw.apply ↔ x > x₀/φ)
 
+def SX.fee.arbitrage.is_solution (sw: Swap sx s a t0 t1 x₀) (o: O): Prop :=
+  is_solution_less sw o ∧ is_solution_more φ sw o
+
 
 theorem SX.fee.arbitrage.constprod.solution_less
   (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
@@ -362,3 +365,149 @@ theorem SX.fee.arbitrage.constprod.solution_more
       rw [add_lt_add_iff_left]
 
     exact gain_ε_neg
+
+
+
+theorem SX.fee.arbitrage.constprod.equil_value
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o: O)
+  (hφ : φ < 1)
+  (h_pos : (o t0).sqrt * (s.amms.r0 t0 t1 sw0.exi) * ((1: ℝ>0) + φ) < (s.amms.r0 t0 t1 sw0.exi).sqrt * ((o t0) * (s.amms.r0 t0 t1 sw0.exi) * (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) + (⟨4, by norm_num⟩ : ℝ>0) * (o t1) * (s.amms.r1 t0 t1 sw0.exi) * φ ^ 2).sqrt)
+  (h0 : x₀ =
+    (((s.amms.r0 t0 t1 sw0.exi).sqrt * ((o t0) * (s.amms.r0 t0 t1 sw0.exi) * (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) + (⟨4, by norm_num⟩ : ℝ>0) * (o t1) * (s.amms.r1 t0 t1 sw0.exi) * φ ^ 2).sqrt).sub
+    ((o t0).sqrt * (s.amms.r0 t0 t1 sw0.exi) * ((1: ℝ>0) + φ)) h_pos) /
+      (⟨2, by norm_num⟩ * (o t0).sqrt * φ)) : SX.fee.constprod.int_rate φ  (sw0.apply.amms.r0 t0 t1 (swap_apply_amm_exi _)) (sw0.apply.amms.r1 t0 t1 (swap_apply_amm_exi _)) = (o t0) / (o t1)
+       := by
+
+
+    set n_2 : ℝ>0 := (⟨2, by norm_num⟩ : ℝ>0) with h2
+    set n_4 : ℝ>0 := (⟨4, by norm_num⟩ : ℝ>0) with h4
+    set φ_sub_1_sq : ℝ>0 := (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) with hφ_sub_1
+
+    rw [Swap.r0_after_swap φ sw0, Swap.r1_after_swap φ sw0]
+    rw [PReal.eq_iff_toReal_eq]
+
+    unfold constprod.int_rate constprod
+    rw [SX.fee.φ_r1_sub_α_x_simp, div_div]
+    simp
+    set_and_subst_reserves s.amms t0 t1 sw0.exi
+
+    simp_rw [←hr0] at h0
+    conv at h0 =>
+      conv =>
+        pattern (⟨4, _⟩ : ℝ>0)
+        rw [←h4]
+      conv =>
+        pattern (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0)
+        rw [←hφ_sub_1]
+      conv =>
+        pattern (s.amms.r1 t0 t1 sw0.exi)
+        rw [←hr1]
+      conv =>
+        pattern (⟨2, _⟩ : ℝ>0)
+        rw [←h2]
+
+    have hx₀r0 : (↑r0 : ℝ) + (↑x₀ : ℝ) =
+      ((o t0 : ℝ).sqrt * (r0 : ℝ) * (φ - 1) + (↑r0 : ℝ).sqrt * ((o t0 : ℝ) * r0 * (φ - 1)^2 + 4 * (o t1) * r1 * φ^2).sqrt) /
+          (2 * (o t0: ℝ).sqrt * φ):= by
+
+          conv =>
+            lhs
+            rw [h0]
+            rw [PReal.div_toReal, PReal.sub_toReal]
+            rw [add_comm, div_add' _ _ _ (PReal.toReal_ne_zero _)]
+            rw [sub_eq_add_neg, add_assoc, add_comm _ (↑r0 * ↑(n_2 * PReal.sqrt (o t0) * φ) : ℝ)]
+            rw [← sub_eq_add_neg]
+            repeat rw [PReal.mul_toReal]
+            repeat rw [PReal.sqrt_to_real]
+            repeat rw [PReal.add_toReal]
+            repeat rw [PReal.mul_toReal]
+            rw [PReal.toReal_one_eq_Real_one]
+            conv in (↑r0 * (↑n_2 * Real.sqrt ↑(o t0) * ↑φ) - Real.sqrt ↑(o t0) * ↑r0 * (1 + ↑φ)) =>
+              rw [mul_comm (↑n_2 : ℝ), ←mul_assoc, ←mul_assoc, mul_comm (↑r0 : ℝ)]
+              rw [mul_assoc (Real.sqrt ↑(o t0) * ↑r0 : ℝ), ←mul_sub]
+              conv in (↑n_2 * ↑φ - (1 + ↑φ)) =>
+                simp
+                ring_nf!
+                rw [add_comm, ← sub_eq_add_neg]
+            rw [add_comm]
+
+
+    have hφx₀r0 : r0 + φ * (↑x₀ : ℝ) =
+        ((↑r0 : ℝ).sqrt * ((o t0 : ℝ) * r0 * (φ - 1)^2 + 4 * (o t1) * r1 * φ^2).sqrt - (o t0 : ℝ).sqrt * (r0 : ℝ) * (φ - 1)) /
+          (2 * (o t0: ℝ).sqrt):= by
+
+          conv =>
+            lhs
+            rw [h0]
+            rw [PReal.div_toReal, PReal.sub_toReal]
+            conv in (↑(n_2 * PReal.sqrt (o t0) * φ) : ℝ) =>
+              repeat rw [PReal.mul_toReal]
+              rw [mul_comm]
+              rw [←PReal.mul_toReal]
+            rw [mul_div_cancel_den (PReal.toReal_ne_zero _)]
+
+            rw [add_comm, div_add' _ _ _ (PReal.toReal_ne_zero _)]
+            rw [sub_eq_add_neg, add_assoc, add_comm _ (↑r0 * ↑(n_2 * PReal.sqrt (o t0)) : ℝ)]
+            rw [← sub_eq_add_neg]
+            repeat rw [PReal.mul_toReal]
+            repeat rw [PReal.sqrt_to_real]
+            repeat rw [PReal.add_toReal]
+            repeat rw [PReal.mul_toReal]
+            rw [PReal.toReal_one_eq_Real_one]
+            conv in (↑r0 * (↑n_2 * Real.sqrt ↑(o t0)) - Real.sqrt ↑(o t0) * ↑r0 * (1 + ↑φ)) =>
+              rw [mul_comm (↑n_2 : ℝ), ←mul_assoc, mul_comm (↑r0 : ℝ)]
+              rw [←mul_sub]
+              conv in (↑n_2 - (1 + ↑φ)) =>
+                simp
+                ring_nf!
+              rw [←neg_sub, mul_neg]
+            rw [← sub_eq_add_neg]
+
+    rw [←hr0, ←hr1] at h_pos
+    rw [hx₀r0, hφx₀r0]
+    set m : ℝ := (↑r0 : ℝ).sqrt * ((o t0 : ℝ) * r0 * (φ - 1)^2 + 4 * (o t1) * r1 * φ^2).sqrt with hm
+    rw [div_mul_div_comm]
+
+    conv in (2 * Real.sqrt ↑(o t0) * (2 * Real.sqrt ↑(o t0) * φ)) =>
+      rw [←mul_assoc, mul_assoc 2, ←mul_assoc _ 2, mul_comm _ 2, ←mul_assoc, ←mul_assoc]
+      norm_num
+      rw [mul_assoc 4, Real.mul_self_sqrt (le_of_lt (PReal.toReal_pos _))]
+    rw [div_div_eq_mul_div]
+    rw [add_comm _ m, ←square_diff]
+    rw [mul_assoc (Real.sqrt (↑(o t0) : ℝ)), mul_pow (Real.sqrt (↑(o t0) : ℝ))]
+    rw [Real.sq_sqrt (le_of_lt (PReal.toReal_pos _)), mul_pow (↑r0 : ℝ), ←mul_assoc _ (↑r0^2 : ℝ)]
+
+    have h_sqrt : ↑r0 * (↑(o t0) * ↑r0 * (↑φ - (1:ℝ)) ^ 2 + 4 * ↑(o t1) * ↑r1 * ↑φ ^ 2) ≥ 0 := by
+
+      rw [←PReal.mul_toReal]
+      rw [←PReal.sq_toReal]
+      have hh' : (↑φ - 1) ^ 2 > (0 : ℝ) := PReal.neg_sub_ne_zero_pos hφ
+      have hh'' : ↑(o t0 * r0) * (↑φ - 1) ^ 2 > (0 : ℝ) := mul_pos (PReal.toReal_pos _) hh'
+      have hh''' : 4 * ↑(o t1) * ↑r1 * (↑(φ ^ 2 : ℝ>0) : ℝ) > (0 : ℝ) := by simp [PReal.toReal_pos]
+      have hh'''' : (↑(o t0 * r0) * (↑φ - 1) ^ 2 + 4 * ↑(o t1) * ↑r1 * ↑(φ ^ 2 : ℝ>0)) > (0: ℝ) := by
+        exact add_pos hh'' hh'''
+      exact le_of_lt (mul_pos (PReal.toReal_pos _) hh'''')
+
+    have hm_sq : m^2 = (o t0) * r0^2 * (φ - 1) ^ 2 + 4 * (o t1) * r0 * r1 * φ^2 := by
+      rw [hm]
+      rw [←Real.sqrt_mul (le_of_lt (PReal.toReal_pos _))]
+      rw [Real.sq_sqrt h_sqrt]
+      rw [left_distrib]
+      ring_nf!
+
+    rw [hm_sq]
+    rw [add_sub_cancel']
+    rw [mul_comm, mul_assoc, ←mul_assoc (↑φ:ℝ), ←mul_assoc (↑φ:ℝ), ←sq]
+    rw [mul_comm _ (↑r0 : ℝ), mul_assoc (↑r0 : ℝ), mul_comm _ (↑r1 : ℝ), ←mul_assoc (↑r0 : ℝ)]
+    rw [mul_assoc 4]
+    conv in _ / _ =>
+      enter [2]
+      rw [mul_assoc _ (↑r1 : ℝ) (↑φ ^ 2 : ℝ)]
+      rw [mul_assoc _ _ ((↑r1 * ↑φ ^ 2) : ℝ)]
+      rw [mul_assoc 4, ←mul_assoc (↑r0 : ℝ)]
+    have h_ne_zero : (4 : ℝ) ≠ 0 := by simp
+    have h_ne_zero' : ((↑r0 * ↑r1 * ↑φ ^ 2) : ℝ) ≠ (0 : ℝ) := by
+      rw [←PReal.mul_toReal, ←PReal.sq_toReal, ←PReal.mul_toReal]
+      exact PReal.toReal_ne_zero _
+    rw [mul_div_mul_left _ _ h_ne_zero, mul_div_mul_right _ _ h_ne_zero']

@@ -126,3 +126,7 @@ theorem mul_pos_of_Real (a b : ℝ>0) : (↑a : ℝ) * (↑b: ℝ) > 0 := by
   simp
   rw [←PReal.mul_toReal]
   exact toReal_pos (a*b)
+
+theorem neg_sub_ne_zero_pos {a b : ℝ} (h : a < b): (a - b) ^ 2 > 0 := by
+  have hh : a - b < 0 := by simp [h]
+  exact sq_pos_of_neg hh
