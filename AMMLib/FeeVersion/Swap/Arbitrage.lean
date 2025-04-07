@@ -511,3 +511,76 @@ theorem SX.fee.arbitrage.constprod.equil_value
       rw [←PReal.mul_toReal, ←PReal.sq_toReal, ←PReal.mul_toReal]
       exact PReal.toReal_ne_zero _
     rw [mul_div_mul_left _ _ h_ne_zero, mul_div_mul_right _ _ h_ne_zero']
+
+
+theorem SX.fee.arbitrage.constprod.equil_value_solution_arbitrage
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o: O)
+  (hφ : φ < 1)
+  (h_pos : (o t0).sqrt * (s.amms.r0 t0 t1 sw0.exi) * ((1: ℝ>0) + φ) < (s.amms.r0 t0 t1 sw0.exi).sqrt * ((o t0) * (s.amms.r0 t0 t1 sw0.exi) * (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) + (⟨4, by norm_num⟩ : ℝ>0) * (o t1) * (s.amms.r1 t0 t1 sw0.exi) * φ ^ 2).sqrt)
+  (h0 : x₀ =
+    (((s.amms.r0 t0 t1 sw0.exi).sqrt * ((o t0) * (s.amms.r0 t0 t1 sw0.exi) * (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) + (⟨4, by norm_num⟩ : ℝ>0) * (o t1) * (s.amms.r1 t0 t1 sw0.exi) * φ ^ 2).sqrt).sub
+    ((o t0).sqrt * (s.amms.r0 t0 t1 sw0.exi) * ((1: ℝ>0) + φ)) h_pos) /
+      (⟨2, by norm_num⟩ * (o t0).sqrt * φ)) : SX.fee.arbitrage.is_solution φ sw0 o := by
+
+      unfold is_solution
+      have h_equil : SX.fee.constprod.int_rate φ  (sw0.apply.amms.r0 t0 t1 (swap_apply_amm_exi _)) (sw0.apply.amms.r1 t0 t1 (swap_apply_amm_exi _)) = (o t0) / (o t1) := SX.fee.arbitrage.constprod.equil_value _ _ _ hφ h_pos h0
+
+      have h1 : is_solution_less sw0 o := SX.fee.arbitrage.constprod.solution_less φ sw0 o hφ h_equil
+      have h2 : is_solution_more  φ sw0 o := SX.fee.arbitrage.constprod.solution_more φ sw0 o hφ h_equil
+
+      exact ⟨h1, h2⟩
+
+theorem SX.fee.arbitrage.constprod.solution_arbitrage_unique
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o: O)
+  (h_sol : SX.fee.arbitrage.is_solution φ sw0 o)
+  (hφ : φ < 1)
+  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
+    ¬ ∃ (sw1 : Swap (SX.fee.constprod φ) s a t0 t1 x₁), x₁ ≠ x₀ ∧ (x₁ > x₀ / φ ∨ x₀ > x₁ / φ) ∧ SX.fee.arbitrage.is_solution φ sw1 o := by
+
+    intro h
+    obtain ⟨sw1, h_sw1⟩ := h
+    obtain ⟨h_diff, ⟨h_cases, h_sol'⟩⟩ := h_sw1
+
+    rcases (lt_or_gt_of_ne h_diff) with hlt | hgt
+    .
+      unfold is_solution is_solution_less at h_sol' h_sol
+      have h_max' := h_sol'.2 x₀ sw0 hlt no_mints
+      have h_max := h_sol.1 x₁ sw1 hlt no_mints
+      have h_suff : x₀ > x₁ / φ := by
+        rcases h_cases with h₁ | h₂
+        -- case 1: x₁ > x₀ / φ
+        ·
+          have h_gt' : x₀ / φ > x₀ := by
+            exact div_gt_self (PReal.toReal_pos _) (PReal.toReal_pos _) hφ
+          have := (gt_trans h₁ h_gt')
+          have := (gt_trans this hlt)
+          aesop
+
+        -- case 2: x₁ < x₀
+        · exact h₂
+      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
+      have h_max'' := h_max'.mpr h_suff
+      have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max'' h_max)
+      exact h_contra
+
+    .
+      unfold is_solution is_solution_less at h_sol' h_sol
+      have h_max' := h_sol'.1 x₀ sw0 hgt no_mints
+      have h_max := h_sol.2 x₁ sw1 hgt no_mints
+      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
+      have h_suff : x₁ > x₀ / φ := by
+        rcases h_cases with h₁ | h₂
+        -- case 1: x₁ > x₀ / φ
+        · exact h₁
+
+        -- case 2: x₁ < x₀
+        · have h_gt' : x₁ / φ > x₁ := by
+            exact div_gt_self (PReal.toReal_pos _) (PReal.toReal_pos _) hφ
+          have := (gt_trans h₂ h_gt')
+          have := (gt_trans this hgt)
+          aesop
+      have h_max'' := h_max.mpr h_suff
+      have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max' h_max'')
+      exact h_contra

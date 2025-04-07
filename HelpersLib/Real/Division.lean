@@ -24,3 +24,9 @@ theorem mul_div_cancel_den {a b c : ℝ} (ha : a ≠ 0): a * (b / (a * c)) = b /
   ring_nf!
   rw [mul_assoc a, mul_comm b, ←mul_assoc]
   simp [ha]
+
+theorem div_gt_self {a b : ℝ} (ha : a > 0) (hb : b > 0) (hb' : b < 1): a / b > a := by
+  ring_nf!
+  aesop
+  rw [one_lt_inv_iff]
+  exact ⟨hb, hb'⟩
