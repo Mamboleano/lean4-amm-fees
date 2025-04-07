@@ -548,6 +548,7 @@ theorem SX.fee.arbitrage.constprod.solution_arbitrage_unique
       unfold is_solution is_solution_less at h_sol' h_sol
       have h_max' := h_sol'.2 x₀ sw0 hlt no_mints
       have h_max := h_sol.1 x₁ sw1 hlt no_mints
+      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
       have h_suff : x₀ > x₁ / φ := by
         rcases h_cases with h₁ | h₂
         -- case 1: x₁ > x₀ / φ
@@ -560,7 +561,6 @@ theorem SX.fee.arbitrage.constprod.solution_arbitrage_unique
 
         -- case 2: x₁ < x₀
         · exact h₂
-      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
       have h_max'' := h_max'.mpr h_suff
       have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max'' h_max)
       exact h_contra
@@ -584,3 +584,77 @@ theorem SX.fee.arbitrage.constprod.solution_arbitrage_unique
       have h_max'' := h_max.mpr h_suff
       have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max' h_max'')
       exact h_contra
+
+
+theorem SX.fee.arbitrage.constprod.solution_equil_unique
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o: O)
+  (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
+  (hφ : φ < 1)
+  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
+    ¬ ∃ (sw1 : Swap (SX.fee.constprod φ) s a t0 t1 x₁), x₁ ≠ x₀ ∧ SX.fee.constprod.sw_to_equil φ sw1 o := by
+
+    intro h
+    obtain ⟨sw1, ⟨h_diff, h_equil'⟩⟩ := h
+
+    unfold constprod.sw_to_equil at h_equil h_equil'
+    have int_rates_eq : constprod.int_rate φ ((Swap.apply sw1).amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi _)) ((Swap.apply sw1).amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi _)) =
+      constprod.int_rate φ ((Swap.apply sw0).amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi _)) ((Swap.apply sw0).amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi _)) := by
+      rw [h_equil, h_equil']
+
+    unfold constprod.int_rate at int_rates_eq
+    rw [Swap.r0_after_swap φ sw0, Swap.r0_after_swap φ _ , Swap.r1_after_swap φ _, Swap.r1_after_swap φ _] at int_rates_eq
+    unfold constprod at int_rates_eq
+
+    conv at int_rates_eq =>
+      conv in φ * _ =>
+        rw [SX.fee.φ_r1_sub_α_x_simp φ x₁ (s.amms.r0 t0 t1 (sw1.exi)) (s.amms.r1 t0 t1 (sw1.exi)) (sw1.nodrain)]
+
+    conv at int_rates_eq =>
+      rhs
+      conv in φ * _ =>
+        rw [SX.fee.φ_r1_sub_α_x_simp φ x₀ (s.amms.r0 t0 t1 (sw0.exi)) (s.amms.r1 t0 t1 (sw0.exi)) (sw0.nodrain)]
+
+    set_and_subst_reserves s.amms t0 t1 sw0.exi
+
+    conv at int_rates_eq =>
+      rw [div_div, div_div]
+      simp
+      rw [←hr0]
+      rw [left_distrib, left_distrib, right_distrib, right_distrib, right_distrib, right_distrib]
+      rw [PReal.eq_iff_toReal_eq]
+      conv =>
+        repeat rw [PReal.add_toReal]
+        repeat rw [PReal.mul_toReal]
+      rw [add_assoc, add_assoc]
+      rw [add_right_inj]
+      conv =>
+        lhs
+        rw [←mul_one (↑r0 * ↑x₁ : ℝ)]
+        rw [mul_assoc, mul_comm, mul_comm (↑x₁ : ℝ), ←add_assoc]
+        rw [←left_distrib, mul_assoc (↑φ : ℝ), ←sq]
+      conv =>
+        rhs
+        rw [←mul_one (↑r0 * ↑x₀ : ℝ)]
+        rw [mul_assoc, mul_comm, mul_comm (↑x₀ : ℝ), ←add_assoc]
+        rw [←left_distrib, mul_assoc (↑φ : ℝ), ←sq]
+      rw [←sub_eq_zero, ←sub_add_sub_comm]
+      rw [←sub_mul, ←mul_sub (↑φ : ℝ), ←mul_sub]
+      rw [square_diff, ←mul_assoc, mul_comm (↑φ : ℝ), mul_comm (↑r0 : ℝ)]
+      rw [mul_assoc, mul_assoc, ←left_distrib]
+      rw [mul_eq_zero]
+
+    have h_ne_zero : (↑r0 * (↑φ + (1 : ℝ>0)) + ↑φ * (↑x₁ + ↑x₀) : ℝ) ≠ (0 : ℝ) := by
+      repeat rw [←PReal.add_toReal]
+      repeat rw [←PReal.mul_toReal]
+      repeat rw [←PReal.add_toReal]
+      exact PReal.toReal_ne_zero _
+
+    have h_eq : (x₁ : ℝ) = x₀ := by
+      rcases int_rates_eq with hh | hh
+      . rw [←sub_eq_zero]
+        exact hh
+      .
+        rw [←PReal.toReal_one_eq_Real_one] at hh
+        aesop
+    aesop

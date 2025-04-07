@@ -203,6 +203,11 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
   noncomputable def SX.fee.constprod.int_rate :=
     λ (r0 r1: ℝ>0) => (φ * r1)/(r0)
 
+  noncomputable def SX.fee.constprod.sw_to_equil (sw0 : Swap (SX.fee.constprod φ) s a t0 t1 x₀) (o : O): Prop :=
+    SX.fee.constprod.int_rate φ (sw0.apply.amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) =
+      o t0 / o t1
+
+
   def SX.fee.constprod.int_rate_strictmono: Prop :=
     ∀ (r0 r1 r0' r1': ℝ>0),
       r0' ≤ r0 ∧ r1 ≤ r1'
