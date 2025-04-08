@@ -654,7 +654,6 @@ theorem SX.fee.arbitrage.constprod.solution_equil_unique
       rcases int_rates_eq with hh | hh
       . rw [←sub_eq_zero]
         exact hh
-      .
-        rw [←PReal.toReal_one_eq_Real_one] at hh
+      . rw [←PReal.toReal_one_eq_Real_one] at hh
         aesop
     aesop
