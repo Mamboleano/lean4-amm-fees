@@ -20,3 +20,9 @@ theorem mul_mul_mul_comm_third_first (a b c d: ℝ>0) : a*b*c*d = c*b*a*d := by
 theorem mul_mul_mul_comm_third_second (a b c d: ℝ>0) : a*b*c*d = a*c*b*d := by
   simp
   rw [mul_assoc, mul_comm b c, ←mul_assoc]
+
+theorem PReal.mul_inv_cancel (a: ℝ>0) : a * a⁻¹ = 1 := by
+  aesop
+
+theorem PReal.mul_lt_mul_right (a b c : ℝ>0) : b * a < c * a ↔ b < c := by
+  simp

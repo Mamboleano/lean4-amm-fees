@@ -25,6 +25,9 @@ def sub (x y: ℝ>0) (h: y < x): ℝ>0 :=
   rw [add_comm]
   exact sub_y_add_y x y h
 
+theorem PReal.sub_add (x y z : ℝ>0) (h : x > y+z): x.sub (y+z) h = (x.sub y (by sorry)).sub z (by sorry) := by sorry
+
+
 theorem mul_sub' (x y z: ℝ>0) (h: z < y):
   x*(y.sub z h) = (x*y).sub (x*z) (by simp [h]) := by
     rw [← toReal_eq_toReal_iff]

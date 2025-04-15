@@ -191,6 +191,54 @@ theorem SX.fee.arbitrage.z_sub_one_α_β_simp
 
     rw [hh]
 
+theorem SX.fee.arbitrage.big_factor_simp'
+  (sw0: Swap (constprod φ) s a t0 t1 x₀)
+  (sw1: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁)
+  : ((↑x₁ * ↑(Swap.rate sw1) +
+    (↑(z φ x₀ x₁ (AMMs.r0 s.amms t0 t1 sw0.exi)) - ↑(1 : ℝ>0)) * (↑x₀ * ↑(Swap.rate sw0) + ↑x₁ * ↑(Swap.rate sw1))) : ℝ) =
+    (↑φ * ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑(AMMs.r1 s.amms t0 t1 sw0.exi) * ↑x₁) /
+      ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀ + ↑φ*↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀)) := by
+
+      set_and_subst_reserves s.amms t0 t1 sw0.exi
+      set_and_subst_α_β sw0 sw1
+
+      have hx₁β := SX.fee.constprod.beta_simp_rate φ sw0 sw1
+
+      rw [PReal.eq_iff_toReal_eq] at hx₁β
+      simp at hx₁β
+      conv at hx₁β =>
+        repeat rw [←hr0]
+        repeat rw [←hr1]
+        rw [←hβ]
+
+      have hzαβ := SX.fee.arbitrage.z_sub_one_α_β_simp φ sw0 sw1
+
+      conv at hzαβ =>
+        repeat rw [←hr0]
+        repeat rw [←hr1]
+        rw [←hβ]
+        rw [←hα]
+
+      rw [hzαβ, hx₁β, ←sub_eq_add_neg]
+      have hd_ne_zero : ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁): ℝ) ≠ 0 := by
+        rw [←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
+        exact PReal.toReal_ne_zero _
+      have hc_ne_zero: ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ) ≠ 0 := by
+        rw [←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
+        exact PReal.toReal_ne_zero _
+
+      conv =>
+        enter [1]
+        rw [mul_assoc _ ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁) : ℝ)]
+        rw [div_sub_div_comm_fact_denum hd_ne_zero]
+        rw [mul_assoc _ (↑r1 : ℝ) _, mul_comm (↑r1 : ℝ), ←mul_assoc]
+        rw [mul_assoc _ (↑x₀ : ℝ) _ , mul_comm (↑x₀: ℝ) _, ←mul_assoc, mul_assoc _ (↑x₀ : ℝ)]
+        rw [←mul_sub, mul_sub (↑x₀ : ℝ), mul_one, mul_comm (↑x₀ : ℝ), sub_sub_eq_add_sub]
+        rw [add_sub_comm', add_sub_comm', add_sub_assoc, sub_self, add_zero]
+        rw [add_assoc, add_comm _ (↑x₀ : ℝ), ←add_assoc, mul_comm]
+        rw [mul_assoc ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ)]
+        rw [mul_div_mul_left _ _ hc_ne_zero]
+        rw [mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ)]
 
 theorem SX.fee.arbitrage.big_factor_simp
   (sw0: Swap (constprod φ) s a t0 t1 x₀)
@@ -200,51 +248,14 @@ theorem SX.fee.arbitrage.big_factor_simp
     (↑φ * ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑(AMMs.r1 s.amms t0 t1 sw0.exi)) /
       ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀ + ↑φ*↑x₁) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀)) := by
 
-    set_and_subst_reserves s.amms t0 t1 sw0.exi
-    set_and_subst_α_β sw0 sw1
 
-    have hx₁β := SX.fee.constprod.beta_simp_rate φ sw0 sw1
-
-    rw [PReal.eq_iff_toReal_eq] at hx₁β
-    simp at hx₁β
-    conv at hx₁β =>
-      repeat rw [←hr0]
-      repeat rw [←hr1]
-      rw [←hβ]
-
-    have hzαβ := SX.fee.arbitrage.z_sub_one_α_β_simp φ sw0 sw1
-
-    conv at hzαβ =>
-      repeat rw [←hr0]
-      repeat rw [←hr1]
-      rw [←hβ]
-      rw [←hα]
-
-    rw [hzαβ, hx₁β, ←sub_eq_add_neg]
-    have hd_ne_zero : ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁): ℝ) ≠ 0 := by
-      rw [←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
-      exact PReal.toReal_ne_zero _
-    have hc_ne_zero: ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ) ≠ 0 := by
-      rw [←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal]
-      exact PReal.toReal_ne_zero _
-
-    conv in _ / _ =>
-      enter [1]
-      rw [mul_assoc _ ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ), mul_comm ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁) : ℝ)]
-      rw [div_sub_div_comm_fact_denum hd_ne_zero]
-      rw [mul_assoc _ (↑r1 : ℝ) _, mul_comm (↑r1 : ℝ), ←mul_assoc]
-      rw [mul_assoc _ (↑x₀ : ℝ) _ , mul_comm (↑x₀: ℝ) _, ←mul_assoc, mul_assoc _ (↑x₀ : ℝ)]
-      rw [←mul_sub, mul_sub (↑x₀ : ℝ), mul_one, mul_comm (↑x₀ : ℝ), sub_sub_eq_add_sub]
-      rw [add_sub_comm', add_sub_comm', add_sub_assoc, sub_self, add_zero]
-      rw [add_assoc, add_comm _ (↑x₀ : ℝ), ←add_assoc, mul_comm]
-      rw [mul_assoc ((↑r0 + ↑x₀ + ↑φ * ↑x₁) : ℝ)]
-      rw [mul_div_mul_left _ _ hc_ne_zero]
-      rw [mul_comm ((↑r0 + ↑φ * ↑x₀) : ℝ)]
+    have := SX.fee.arbitrage.big_factor_simp' φ sw0 sw1
+    rw [this]
     rw [div_div]
     rw [mul_div_mul_right _ _ (PReal.toReal_ne_zero _)]
 
+
 theorem SX.fee.arbitrage.int_rate_simp
-  (x₁ : ℝ>0)
   (sw0: Swap (constprod φ) s a t0 t1 x₀):
     ↑(constprod.int_rate φ (AMMs.r0 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0))
       (AMMs.r1 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0))) =
@@ -291,7 +302,7 @@ theorem SX.fee.arbitrage.add_gain_εφ_neg
       conv in (↑(x₁ * β) + (↑(z φ x₀ x₁ r0) - ↑1) * (↑(x₀ * α) + ↑(x₁ * β))) / ↑x₁ =>
         simp
         rw [big_factor_simp φ sw0 sw2]
-      rw [int_rate_simp φ x₁ sw0]
+      rw [int_rate_simp φ sw0]
 
     subst_reserves s.amms t0 t1
     have pos1 : ↑φ * ↑r0 * ↑r1 > (0 : ℝ) := by
@@ -329,6 +340,82 @@ theorem SX.fee.arbitrage.add_gain_εφ_neg
         rw [←mul_one (↑x₀ : ℝ)]
         rw [←div_self (PReal.toReal_ne_zero φ), mul_div]
       rw [←add_div, sub_mul, add_sub, one_mul, add_comm, add_sub_assoc, mul_comm, sub_self, add_zero]
+
+
+theorem SX.fee.arbitrage.add_gain_εφ_pos
+  (sw0: Swap (constprod φ) s a t0 t1 x₀)
+  (sw1: Swap (constprod φ) s a t0 t1 x)
+  (sw2: Swap (constprod φ) (Swap.apply sw0) a t0 t1 x₁)
+  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0)
+  (h_split : x = x₀ + x₁)
+  (o: O)
+  (h_equil: SX.fee.constprod.int_rate φ (sw0.apply.amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) = o t0 / o t1):
+  A.gain a o (Swap.apply sw0) (Swap.apply sw2) + ↑(Swap.fee.εφ φ sw0 sw2 hφ o) > 0 ↔ x < x₀/φ := by
+
+    unfold Swap.fee.εφ
+    have no_mints' : W₁.get (S₁.get sw0.apply.mints a) t0 t1 = 0 := by
+      rw [Swap.mints sw0]
+      exact no_mints
+    rw [Swap.fee.self_gain_no_mint_eq _ no_mints']
+    simp
+    unfold Swap.y
+    set_and_subst_reserves s.amms t0 t1 sw0.exi
+    set_and_subst_α_β sw0 sw2
+
+    apply symm at h_split
+    rw [PReal.eq_iff_toReal_eq, PReal.add_toReal, add_comm] at h_split
+    rw [←eq_sub_iff_add_eq] at h_split
+
+    conv =>
+      lhs
+      rw [sub_add_eq_add_sub, mul_comm, mul_assoc, ←left_distrib]
+      rw [sub_pos]
+      rw [mul_lt_mul_iff_div_lt_div (PReal.toReal_pos x₁) (PReal.toReal_pos (o t1))]
+      rw [←PReal.div_toReal]
+      rw [←h_equil]
+      conv in (↑(x₁ * β) + (↑(z φ x₀ x₁ r0) - ↑1) * (↑(x₀ * α) + ↑(x₁ * β))) / ↑x₁ =>
+        simp
+        rw [big_factor_simp φ sw0 sw2]
+      rw [int_rate_simp φ sw0]
+
+    subst_reserves s.amms t0 t1
+    have pos1 : ↑φ * ↑r0 * ↑r1 > (0 : ℝ) := by
+      rw [←PReal.mul_toReal, ←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+    have pos2 : ((↑r0 + ↑φ * ↑x₀ + ↑φ * ↑x₁) * (↑r0 + ↑φ * ↑x₀)) > (0 : ℝ) := by
+      rw [←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal, ←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+    have pos3 : ((↑r0 + ↑x₀) * (↑r0 + ↑φ * ↑x₀)) > (0 : ℝ) := by
+      rw [←PReal.mul_toReal, ←PReal.add_toReal, ←PReal.add_toReal, ←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+    have pos4 : (↑r0 + ↑φ * ↑x₀) > (0 : ℝ) := by
+      rw [←PReal.mul_toReal, ←PReal.add_toReal]
+      exact PReal.toReal_pos _
+    conv =>
+      lhs
+      conv =>
+        lhs
+        rw [PReal.div_toReal]
+        rw [PReal.mul_toReal, PReal.mul_toReal, PReal.mul_toReal]
+        rw [PReal.add_toReal, PReal.add_toReal, PReal.mul_toReal]
+      rw [div_lt_div_left pos1 pos3 pos2]
+      rw [mul_lt_mul_right pos4]
+      rw [add_assoc]
+      rw [add_lt_add_iff_left, add_comm]
+      rw [←lt_sub_iff_add_lt]
+      conv in _ - _ => enter [1]; rw [←one_mul (↑x₀ : ℝ)]
+      rw [←one_mul (↑x₀ : ℝ), ←sub_mul, one_mul]
+      rw [mul_comm (↑φ : ℝ)]
+      rw [mul_lt_iff_lt_div _ _ _ (PReal.toReal_pos _)]
+      rw [h_split]
+      rw [sub_lt_iff_lt_add]
+
+      conv in _ + _ =>
+        enter [2]
+        rw [←mul_one (↑x₀ : ℝ)]
+        rw [←div_self (PReal.toReal_ne_zero φ), mul_div]
+
+      rw [←add_div, sub_mul, mul_comm (↑φ: ℝ), sub_add_cancel, one_mul]
 
 
 theorem SX.fee.arbitrage.constprod.solution_more
@@ -531,71 +618,16 @@ theorem SX.fee.arbitrage.constprod.equil_value_solution_arbitrage
 
       exact ⟨h1, h2⟩
 
-theorem SX.fee.arbitrage.constprod.solution_arbitrage_unique
-  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
-  (o: O)
-  (h_sol : SX.fee.arbitrage.is_solution φ sw0 o)
-  (hφ : φ < 1)
-  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
-    ¬ ∃ (sw1 : Swap (SX.fee.constprod φ) s a t0 t1 x₁), x₁ ≠ x₀ ∧ (x₁ > x₀ / φ ∨ x₀ > x₁ / φ) ∧ SX.fee.arbitrage.is_solution φ sw1 o := by
-
-    intro h
-    obtain ⟨sw1, h_sw1⟩ := h
-    obtain ⟨h_diff, ⟨h_cases, h_sol'⟩⟩ := h_sw1
-
-    rcases (lt_or_gt_of_ne h_diff) with hlt | hgt
-    .
-      unfold is_solution is_solution_less at h_sol' h_sol
-      have h_max' := h_sol'.2 x₀ sw0 hlt no_mints
-      have h_max := h_sol.1 x₁ sw1 hlt no_mints
-      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
-      have h_suff : x₀ > x₁ / φ := by
-        rcases h_cases with h₁ | h₂
-        -- case 1: x₁ > x₀ / φ
-        ·
-          have h_gt' : x₀ / φ > x₀ := by
-            exact div_gt_self (PReal.toReal_pos _) (PReal.toReal_pos _) hφ
-          have := (gt_trans h₁ h_gt')
-          have := (gt_trans this hlt)
-          aesop
-
-        -- case 2: x₁ < x₀
-        · exact h₂
-      have h_max'' := h_max'.mpr h_suff
-      have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max'' h_max)
-      exact h_contra
-
-    .
-      unfold is_solution is_solution_less at h_sol' h_sol
-      have h_max' := h_sol'.1 x₀ sw0 hgt no_mints
-      have h_max := h_sol.2 x₁ sw1 hgt no_mints
-      -- Non possiamo giungere ad una contraddizione qui ! Ci serve l'altra condizione
-      have h_suff : x₁ > x₀ / φ := by
-        rcases h_cases with h₁ | h₂
-        -- case 1: x₁ > x₀ / φ
-        · exact h₁
-
-        -- case 2: x₁ < x₀
-        · have h_gt' : x₁ / φ > x₁ := by
-            exact div_gt_self (PReal.toReal_pos _) (PReal.toReal_pos _) hφ
-          have := (gt_trans h₂ h_gt')
-          have := (gt_trans this hgt)
-          aesop
-      have h_max'' := h_max.mpr h_suff
-      have h_contra := lt_irrefl (A.gain a o s (Swap.apply sw0)) (lt_trans h_max' h_max'')
-      exact h_contra
-
 
 theorem SX.fee.arbitrage.constprod.solution_equil_unique
   (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
   (o: O)
-  (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
-  (hφ : φ < 1)
-  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
-    ¬ ∃ (sw1 : Swap (SX.fee.constprod φ) s a t0 t1 x₁), x₁ ≠ x₀ ∧ SX.fee.constprod.sw_to_equil φ sw1 o := by
+  (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o):
+    ¬ ∃ (x₁ : ℝ>0) (h_enoguh : ↑x₁ ≤ (S₀.get s.atoms a) t0), x₁ ≠ x₀ ∧ SX.fee.constprod.sw_to_equil φ (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enoguh) o := by
 
     intro h
-    obtain ⟨sw1, ⟨h_diff, h_equil'⟩⟩ := h
+    obtain ⟨x₁, ⟨h_enoguh, ⟨h_diff, h_equil'⟩⟩⟩ := h
+    set sw1 := Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enoguh
 
     unfold constprod.sw_to_equil at h_equil h_equil'
     have int_rates_eq : constprod.int_rate φ ((Swap.apply sw1).amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi _)) ((Swap.apply sw1).amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi _)) =

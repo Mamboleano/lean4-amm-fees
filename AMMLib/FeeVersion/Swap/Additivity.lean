@@ -129,7 +129,6 @@ noncomputable def Swap.fee.εφ_toReal (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap 
       simp [Swap.y]
       aesop
 
-
 theorem sub_eq_iff_add_eq (a b c : ℝ) (h:  a - b = c) : a = b + c := by
   nlinarith!
 

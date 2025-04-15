@@ -117,6 +117,15 @@ theorem div_lt_div (a b c d : ℝ>0) (h_lt : a*d < b*c) : a / c < b / d := by
   rw [mul_comm d c]
   exact div_lt_div_same_denum (a*d) (b*c) (c*d) h_lt
 
+theorem div_lt_div_denum_right (a b c : ℝ>0) : a / (b * c) < d / (e * c) ↔ a / b < d / e := by
+  rw [div_eq_mul_inv, div_eq_mul_inv]
+  conv =>
+    lhs
+    rw [mul_inv, mul_inv]
+    rw [←mul_assoc, ←mul_assoc]
+  rw [mul_lt_mul_right]
+  rw [div_eq_mul_inv, div_eq_mul_inv]
+
 theorem add_pos_of_Real (a b : ℝ>0) : (↑a : ℝ) + (↑b: ℝ) > 0 := by
   simp
   rw [←PReal.add_toReal]

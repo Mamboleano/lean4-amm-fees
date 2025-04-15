@@ -81,6 +81,17 @@ theorem SX.fee.constprod.strictmono:
     rw [← div_eq_mul_inv, div_le_div_iff']
     exact mul_le_mul' c' h'
 
+theorem Swap.constprod.mkSwap (s: Γ) (a: A) (t0 t1: T) (x: ℝ>0) (h_init : s.amms.init t0 t1) (h_enoguh : ↑x ≤ (S₀.get s.atoms a) t0): Swap (SX.fee.constprod φ) s a t0 t1 x :=
+  ⟨
+    h_enoguh,
+    h_init,
+    by
+      have := SX.fee.constprod.outputbound φ
+      unfold SX.outputbound at this
+      exact this x (s.amms.r0 t0 t1 h_init) (s.amms.r1 t0 t1 h_init)
+
+  ⟩
+
 theorem SX.fee.φ_r1_sub_α_x_simp :
   ∀ (x r0 r1 : ℝ>0) (h: x * (φ * r1 / (r0 + φ * x)) < r1),
     φ * PReal.sub r1 (x * (φ * r1 / (r0 + φ * x))) h = φ * r0 * r1 / (r0 + φ * x) := by
