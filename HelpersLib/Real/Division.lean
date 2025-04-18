@@ -30,3 +30,14 @@ theorem div_gt_self {a b : ℝ} (ha : a > 0) (hb : b > 0) (hb' : b < 1): a / b >
   aesop
   rw [one_lt_inv_iff]
   exact ⟨hb, hb'⟩
+
+theorem mul_eq_iff_eq_div {a b c : ℝ} (ha : a ≠ 0) :
+  a * b = c ↔ b = c / a := by
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · calc
+      b       = a⁻¹ * (a * b)    := by rw [← mul_assoc, inv_mul_cancel ha, one_mul]
+      _       = a⁻¹ * c          := by rw [h]
+      _       = c / a            := by rw [mul_comm, div_eq_mul_inv]
+  · calc
+      a * b   = a * (c / a)      := by rw [h]
+      _       = c                := by rw [mul_div]; exact  mul_div_cancel_left c ha

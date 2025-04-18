@@ -3,6 +3,7 @@ import AMMLib.FeeVersion.Swap.Additivity
 import AMMLib.FeeVersion.Swap.Constprod
 import AMMLib.FeeVersion.Swap.Arbitrage
 import HelpersLib.Real.Division
+import HelpersLib.Real.Multiplication
 import HelpersLib.Real.Order
 import HelpersLib.Real.Subtraction
 import HelpersLib.PReal.Basic
@@ -60,6 +61,34 @@ noncomputable def SX.fee.constprod.x_max' (sw0: Swap (SX.fee.constprod φ) s a t
 
 noncomputable def SX.fee.constprod.x_max (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀) (o : O) (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o) (hφ : φ < 1): ℝ>0 :=
   x₀ + (SX.fee.constprod.x_max' φ sw0 o h_equil hφ)
+
+
+theorem SX.fee.constprod.x_max'_eq_cond
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o : O)
+  (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
+  (hφ : φ < 1)
+  : (↑(o t0) : ℝ).sqrt * ((↑(s.amms.r0 t0 t1 sw0.exi) : ℝ) + (↑φ : ℝ) * (↑x₀ : ℝ) + ↑φ*↑(x_max' φ sw0 o h_equil hφ)) =
+      ((↑(o t1) : ℝ) * ↑φ * ↑(s.amms.r0 t0 t1 sw0.exi) * ↑(s.amms.r1 t0 t1 sw0.exi)).sqrt := by
+
+      rw [mul_eq_iff_eq_div (Real.sqrt_ne_zero'.mpr (PReal.toReal_pos _))]
+      rw [add_comm]
+      apply add_eq_of_eq_sub
+      rw [div_sub' _ _ _ (Real.sqrt_ne_zero'.mpr (PReal.toReal_pos _))]
+      rw [mul_eq_iff_eq_div (PReal.toReal_ne_zero _)]
+
+      set_and_subst_reserves s.amms t0 t1 sw0.exi
+      unfold x_max'
+      conv =>
+        lhs
+        rw [PReal.div_toReal, PReal.sub_toReal]
+        rw [PReal.sqrt_to_real]
+        repeat rw [PReal.mul_toReal]
+        rw [PReal.sqrt_to_real]
+        rw [←hr0, ←hr1]
+        rw [PReal.add_toReal]
+        rw [PReal.mul_toReal]
+      rw [div_div]
 
 theorem SX.fee.constprod.x_max_lt_x₀_div_φ (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀) (o : O) (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o) (hφ : φ < 1):
    (x_max φ sw0 o h_equil hφ) < x₀ / φ := by
@@ -159,6 +188,7 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
   (hφ : φ < 1)
   (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ))
   (x_gt_x₀ : x > x₀)
+  (x_diff_x_max : x ≠ (x_max φ sw0 o h_equil hφ))
   (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
     A.gain a o s (Swap.apply sw2) < A.gain a o s (Swap.apply sw_max) := by
 
@@ -188,6 +218,9 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
 
     rw [Swap.fee.additive_gain φ sw0 sw2' sw2_split additive bound no_mints hφ o]
 
+    -- Split values are different
+    have x₁_diff_x_max' : x₁ ≠ x_max' := by aesop
+
     -- Delete Gain(x₀)
     rw [add_assoc, add_assoc]
     apply add_lt_add_left
@@ -215,7 +248,102 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
     rw [←hr0, ←hr1]
 
     -- Starting proof with A, N(x), D(x)
-    sorry
+    set A : ℝ := (↑r0 + ↑φ * ↑x₀) with ha
+    have Dmax_pos : (0:ℝ) < (A + ↑φ * ↑x_max') * A := by
+      rw [ha]
+      repeat rw [←PReal.mul_toReal, ←PReal.add_toReal]
+      rw [←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+
+    have Dx_pos : (0:ℝ) < (A + ↑φ * ↑x₁) * A := by
+      rw [ha]
+      repeat rw [←PReal.mul_toReal, ←PReal.add_toReal]
+      rw [←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+
+    -- Xmax equality condition
+    have x_max'_eq_def : x_max' = (SX.fee.constprod.x_max' φ sw0 o h_equil hφ) := by
+      unfold x_max at x_max_split
+      simp at x_max_split
+      exact x_max_split.symm
+    have x_max_eq_cond : (↑(o t0) : ℝ).sqrt * (A + ↑φ*↑x_max') = ((↑(o t1) : ℝ) * ↑φ * ↑r0 * ↑r1).sqrt := by
+      rw [ha, hr0, hr1, x_max'_eq_def]
+      exact SX.fee.constprod.x_max'_eq_cond φ sw0 o h_equil hφ
+    have x_max_eq_sq : ((↑(o t0) : ℝ).sqrt * (A + ↑φ*↑x_max'))^2 = (((↑(o t1) : ℝ) * ↑φ * ↑r0 * ↑r1).sqrt)^2 := by rw [x_max_eq_cond]
+    have hpos : (0 : ℝ) < ↑(o t1) * ↑φ * ↑r0 * ↑r1 := by
+      rw [←PReal.mul_toReal, ←PReal.mul_toReal, ←PReal.mul_toReal]
+      exact PReal.toReal_pos _
+    rw [mul_pow, Real.sq_sqrt (le_of_lt (PReal.toReal_pos _)), Real.sq_sqrt (le_of_lt hpos)] at x_max_eq_sq
+
+
+    rw [mul_div, mul_div, div_sub' _ _ _ (ne_of_gt Dx_pos), div_sub' _ _ _ (ne_of_gt Dmax_pos)]
+    set Nmax : ℝ := (↑(o t1) * (↑φ * ↑r0 * ↑r1 * ↑x_max') - (A + ↑φ * ↑x_max') * A * (↑x_max' * ↑(o t0))) with hNmax
+    set Nx : ℝ := (↑(o t1) * (↑φ * ↑r0 * ↑r1 * ↑x₁) - (A + ↑φ * ↑x₁) * A * (↑x₁ * ↑(o t0))) with hNx
+
+    rw [div_lt_div_iff Dx_pos Dmax_pos]
+    rw [←sub_pos]
+
+    rw [←mul_assoc, ←mul_assoc, ←sub_mul]
+    conv =>
+      rhs; enter [1];
+
+      -- Group p1 terms
+      rw [hNx, hNmax]
+      rw [sub_mul, sub_mul]
+      rw [←sub_add, sub_sub, add_comm _ ((↑(o t1) * _) * _ : ℝ), ←sub_sub]
+      rw [mul_assoc ((o t1) : ℝ), mul_assoc ((o t1) : ℝ), ←mul_sub]
+      rw [mul_assoc (↑φ * ↑r0 * ↑r1 : ℝ), mul_assoc (↑φ * ↑r0 * ↑r1 : ℝ), ←mul_sub, ←mul_assoc, ←mul_assoc, ←mul_assoc, ]
+      conv in _ * _ =>
+        enter [2]
+        rw [left_distrib, left_distrib (x₁ : ℝ)]
+        rw [←sub_sub, add_sub_comm', add_sub_assoc]
+        rw [mul_comm (φ : ℝ), ←mul_assoc, mul_comm _ (x₁: ℝ), mul_comm (φ : ℝ), ←mul_assoc, sub_self, add_zero]
+        rw [←sub_mul, mul_comm]
+
+      -- Group p0 terms
+      conv in (A + ↑φ * ↑x_max') * A * (↑x_max' * ↑(o t0)) =>
+        rw [mul_assoc _ A, mul_comm (↑x_max' : ℝ), mul_comm (A + ↑φ * ↑x_max'), ←mul_assoc A]
+      conv in (A + ↑φ * ↑x₁) * A * (↑x₁ * ↑(o t0)) * (A + ↑φ * ↑x_max') =>
+        rw [mul_assoc _ A, mul_comm (↑x₁ : ℝ), mul_comm (A + ↑φ * ↑x₁), ←mul_assoc A]
+      rw [sub_add, mul_assoc (A * ↑(o t0)), mul_assoc (A * ↑(o t0)), mul_assoc (A * ↑(o t0)), mul_assoc (A * ↑(o t0))]
+      rw [←mul_sub]
+      rw [mul_assoc (↑x_max' : ℝ), mul_comm (A + ↑φ * ↑x_max'),mul_assoc (↑x₁ : ℝ), ←sub_mul]
+      rw [mul_comm (↑x_max' - ↑x₁ : ℝ), ←mul_assoc, ←mul_assoc]
+
+      -- Finish term
+      rw [←sub_mul]
+      rw [mul_assoc A, mul_comm A, ←sub_mul, ←mul_assoc]
+
+    -- Rewrite with xmax equality condition and simplify
+    rw [mul_assoc _ A, mul_assoc, mul_assoc A, mul_comm _ A, ←mul_assoc A, ←sq, mul_comm]
+    rw [←x_max_eq_sq, sq (A + _), ←mul_assoc]
+    rw [mul_assoc _ (A + ↑φ * ↑x₁), mul_comm (A + ↑φ * ↑x₁), ←mul_assoc _ _ (A + ↑φ * ↑x₁)]
+    rw [←mul_sub, ←sub_sub, add_comm A, ←add_sub, sub_self, add_zero, ←mul_sub]
+    rw [mul_comm _ (↑φ * (↑x_max' - ↑x₁) : ℝ), mul_comm (↑φ : ℝ), ←mul_assoc, ←mul_assoc, ←mul_assoc]
+    rw [mul_assoc (A ^ 2), ←sq]
+
+    have A_pos : 0 < A := by
+      rw [ha, ←PReal.mul_toReal, ←PReal.add_toReal]
+      exact PReal.toReal_pos _
+
+    apply mul_pos
+    . apply mul_pos
+      . apply mul_pos
+        . apply mul_pos
+          . simp [A_pos]
+          . simp at x₁_diff_x_max'
+            rw [PReal.eq_iff_toReal_eq] at x₁_diff_x_max'
+            rw [←ne_eq] at x₁_diff_x_max'
+            rw [sq_pos_iff]
+            rw [sub_ne_zero]
+            exact x₁_diff_x_max'.symm
+        . exact PReal.toReal_pos _
+      . exact PReal.toReal_pos _
+    . apply add_pos
+      . rw [←PReal.mul_toReal]
+        exact PReal.toReal_pos _
+      . exact A_pos
+
 
 theorem SX.fee.constprod.x_max_gain
   (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
@@ -241,7 +369,7 @@ theorem SX.fee.constprod.x_max_gain
       . simp at nle
         rcases lt_or_eq_of_le nle with lt_x₀_x|eq_x₀_x
         -- Case x > x₀
-        . exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max lt_x₀_x no_mints
+        . exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max lt_x₀_x h_diff no_mints
         -- Case x = x₀
         . rw [Swap.apply_same_val sw2 sw0 eq_x₀_x.symm]
           exact gain_x₀_lt_x_max
@@ -249,4 +377,4 @@ theorem SX.fee.constprod.x_max_gain
     -- Case x > x_max
     . have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; aesop
       have x_gt_x₀ : x > x₀ := lt_trans x₀_lt_x_max hx_gt
-      exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ no_mints
+      exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ h_diff no_mints

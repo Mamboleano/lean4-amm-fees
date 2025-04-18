@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: AMMLib
-// Imports: Init AMMLib.State.AMMs AMMLib.State.AMMsNN AMMLib.State.AtomicWall AMMLib.State.AtomicWallSet AMMLib.State.MintedWall AMMLib.State.MintedWallSet AMMLib.State.Networth AMMLib.State.State AMMLib.State.Supply AMMLib.State.Tokens AMMLib.Transaction.Create AMMLib.Transaction.Deposit AMMLib.Transaction.Redeem AMMLib.Transaction.Swap.Additive AMMLib.Transaction.Swap.Basic AMMLib.Transaction.Swap.Constprod AMMLib.Transaction.Swap.Networth AMMLib.Transaction.Swap.Reversible AMMLib.Transaction.Trace AMMLib.FeeVersion.Swap.Additivity AMMLib.FeeVersion.Swap.Basic AMMLib.FeeVersion.Swap.Constprod
+// Imports: Init AMMLib.State.AMMs AMMLib.State.AMMsNN AMMLib.State.AtomicWall AMMLib.State.AtomicWallSet AMMLib.State.MintedWall AMMLib.State.MintedWallSet AMMLib.State.Networth AMMLib.State.State AMMLib.State.Supply AMMLib.State.Tokens AMMLib.Transaction.Create AMMLib.Transaction.Deposit AMMLib.Transaction.Redeem AMMLib.Transaction.Swap.Additive AMMLib.Transaction.Swap.Basic AMMLib.Transaction.Swap.Constprod AMMLib.Transaction.Swap.Networth AMMLib.Transaction.Swap.Reversible AMMLib.Transaction.Trace AMMLib.FeeVersion.Swap.Additivity AMMLib.FeeVersion.Swap.Arbitrage AMMLib.FeeVersion.Swap.Maximal AMMLib.FeeVersion.Swap.Basic AMMLib.FeeVersion.Swap.Constprod
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -34,6 +34,8 @@ lean_object* initialize_AMMLib_Transaction_Swap_Networth(uint8_t builtin, lean_o
 lean_object* initialize_AMMLib_Transaction_Swap_Reversible(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_Transaction_Trace(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_FeeVersion_Swap_Additivity(uint8_t builtin, lean_object*);
+lean_object* initialize_AMMLib_FeeVersion_Swap_Arbitrage(uint8_t builtin, lean_object*);
+lean_object* initialize_AMMLib_FeeVersion_Swap_Maximal(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_FeeVersion_Swap_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_AMMLib_FeeVersion_Swap_Constprod(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
@@ -102,6 +104,12 @@ res = initialize_AMMLib_Transaction_Trace(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_AMMLib_FeeVersion_Swap_Additivity(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_AMMLib_FeeVersion_Swap_Arbitrage(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_AMMLib_FeeVersion_Swap_Maximal(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_AMMLib_FeeVersion_Swap_Basic(builtin, lean_io_mk_world());
