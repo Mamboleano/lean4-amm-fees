@@ -623,11 +623,11 @@ theorem SX.fee.arbitrage.constprod.solution_equil_unique
   (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
   (o: O)
   (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o):
-    ¬ ∃ (x₁ : ℝ>0) (h_enoguh : ↑x₁ ≤ (S₀.get s.atoms a) t0), x₁ ≠ x₀ ∧ SX.fee.constprod.sw_to_equil φ (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enoguh) o := by
+    ¬ ∃ (x₁ : ℝ>0) (h_enough : ↑x₁ ≤ (S₀.get s.atoms a) t0), x₁ ≠ x₀ ∧ SX.fee.constprod.sw_to_equil φ (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough) o := by
 
     intro h
-    obtain ⟨x₁, ⟨h_enoguh, ⟨h_diff, h_equil'⟩⟩⟩ := h
-    set sw1 := Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enoguh
+    obtain ⟨x₁, ⟨h_enough, ⟨h_diff, h_equil'⟩⟩⟩ := h
+    set sw1 := Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough
 
     unfold constprod.sw_to_equil at h_equil h_equil'
     have int_rates_eq : constprod.int_rate φ ((Swap.apply sw1).amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi _)) ((Swap.apply sw1).amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi _)) =
