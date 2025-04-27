@@ -1,4 +1,5 @@
 import HelpersLib.PReal.Basic
+import HelpersLib.Real.Division
 
 namespace PReal
 open NNReal
@@ -39,3 +40,16 @@ theorem div_sub_div_same' (x y z: ℝ>0) (h: y < x):
   (x/z).sub (y/z) (by simp [h]) = (x.sub y h)/z := by
     rw [toReal_eq_toReal_iff]
     simp [div_sub_div_same (x.toReal) y z]
+
+theorem sub_div_aux (x y z: ℝ>0) (h : y < x * z): y / z < x := by
+    simp [div_lt_iff_lt_mul]
+    exact h
+
+theorem sub_div (x y z: ℝ>0) (h: y < x*z):
+  x.sub (y/z) (by exact sub_div_aux x y z h) = ((x*z).sub y h)/z := by
+    rw [← toReal_eq_toReal_iff]
+    simp [div_sub_div_same (x.toReal) y z]
+    ring_nf!
+    field_simp
+    ring_nf!
+    rw [mul_inv_cancel_right₀ (PReal.toReal_ne_zero _)]

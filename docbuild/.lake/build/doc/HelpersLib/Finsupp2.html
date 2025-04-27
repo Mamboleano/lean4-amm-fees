@@ -1,0 +1,228 @@
+<html lang="en"><head><meta charset="UTF-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><link rel="stylesheet" href=".././style.css"></link><link rel="icon" href=".././favicon.svg"></link><link rel="mask-icon" href=".././favicon.svg" color="#000000"></link><link rel="prefetch" href=".././/declarations/declaration-data.bmp" as="image"></link><title>HelpersLib.Finsupp2</title><script defer="true" src=".././mathjax-config.js"></script><script defer="true" src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="true" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>const SITE_ROOT=".././";</script><script>const MODULE_NAME="HelpersLib.Finsupp2";</script><script type="module" src=".././jump-src.js"></script><script type="module" src=".././search.js"></script><script type="module" src=".././expand-nav.js"></script><script type="module" src=".././how-about.js"></script><script type="module" src=".././instances.js"></script><script type="module" src=".././importedBy.js"></script></head><body><input id="nav_toggle" type="checkbox"></input><header><h1><label for="nav_toggle"></label><span>Documentation</span></h1><h2 class="header_filename break_within"><span class="name">HelpersLib</span>.<span class="name">Finsupp2</span></h2><form id="search_form"><input type="text" name="q" autocomplete="off"></input>&#32;<button id="search_button" onclick="javascript: form.action='.././search.html';">Search</button></form></header><nav class="internal_nav"><p><a href="#top">return to top</a></p><p class="gh_nav_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean">source</a></p><div class="imports"><details><summary>Imports</summary><ul><li><a href=".././Init.html">Init</a></li><li><a href=".././HelpersLib/Prod.html">HelpersLib.Prod</a></li><li><a href=".././Mathlib/Data/Finsupp/Basic.html">Mathlib.Data.Finsupp.Basic</a></li><li><a href=".././Mathlib/Data/Finsupp/Defs.html">Mathlib.Data.Finsupp.Defs</a></li></ul></details><details><summary>Imported by</summary><ul id="imported-by-HelpersLib.Finsupp2" class="imported-by-list"></ul></details></div><div class="nav_link"><a class="break_within" href="#Finsupp.sum_zero'"><span class="name">Finsupp</span>.<span class="name">sum_zero'</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.update_diff"><span class="name">Finsupp</span>.<span class="name">update_diff</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up"><span class="name">Finsupp</span>.<span class="name">up</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_eq"><span class="name">Finsupp</span>.<span class="name">up_eq</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_apply"><span class="name">Finsupp</span>.<span class="name">up_apply</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_diff"><span class="name">Finsupp</span>.<span class="name">up_diff</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_diff2"><span class="name">Finsupp</span>.<span class="name">up_diff2</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_self"><span class="name">Finsupp</span>.<span class="name">up_self</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.uncurried_swap"><span class="name">Finsupp</span>.<span class="name">uncurried_swap</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.uncurried_swap_def"><span class="name">Finsupp</span>.<span class="name">uncurried_swap_def</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.uncurried_swap_def'"><span class="name">Finsupp</span>.<span class="name">uncurried_swap_def'</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.curried_swap"><span class="name">Finsupp</span>.<span class="name">curried_swap</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.uncurry_curry2"><span class="name">Finsupp</span>.<span class="name">uncurry_curry2</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.uncurry_apply"><span class="name">Finsupp</span>.<span class="name">uncurry_apply</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.curried_swap_def"><span class="name">Finsupp</span>.<span class="name">curried_swap_def</span></a></div><div class="nav_link"><a class="break_within" href="#Finsupp.up_swap"><span class="name">Finsupp</span>.<span class="name">up_swap</span></a></div></nav><main>
+<div class="decl" id="Finsupp.sum_zero'"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L7-L14">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.sum_zero'"><span class="name">Finsupp</span>.<span class="name">sum_zero'</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">g</span> : <span class="fn"><span class="fn">α</span> → <span class="fn"><span class="fn">β</span> → <span class="fn">γ</span></span></span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">x</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">h</span> : <span class="fn"><span class="fn">g</span> <span class="fn">x</span> <span class="fn">(<span class="fn">f</span> <span class="fn">x</span>)</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn">0</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Algebra/BigOperators/Finsupp/Basic.html#Finsupp.sum">sum</a></span> <span class="fn">g</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn"><span class="fn">(<a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.erase">erase</a> <span class="fn">x</span> <span class="fn">f</span>)</span>.<a href=".././Mathlib/Algebra/BigOperators/Finsupp/Basic.html#Finsupp.sum">sum</a></span> <span class="fn">g</span></span></div></div></div></div><div class="decl" id="Finsupp.update_diff"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L17-L20">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.update_diff"><span class="name">Finsupp</span>.<span class="name">update_diff</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">hdif</span> : <span class="fn">a</span> <a href=".././Init/Core.html#Ne">≠</a> <span class="fn">a'</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.update">update</a></span> <span class="fn">a'</span> <span class="fn">b</span>)</span> <span class="fn">a</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">f</span> <span class="fn">a</span></span></div></div></div></div><div class="decl" id="Finsupp.up"><div class="def"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L23-L25">source</a></div><div class="decl_header"><span class="decl_kind">noncomputable def</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up"><span class="name">Finsupp</span>.<span class="name">up</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span></div></div><details><summary>Equations</summary><ul class="equations"><li class="equation"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a</span> <span class="fn">b</span> <span class="fn">c</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.update">update</a></span> <span class="fn">a</span> <span class="fn">(<span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span>.<a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.update">update</a></span> <span class="fn">b</span> <span class="fn">c</span>)</span></span></li></ul></details><details id="instances-for-list-Finsupp.up" class="instances-for-list"><summary>Instances For</summary><ul class="instances-for-enum"></ul></details></div></div><div class="decl" id="Finsupp.up_eq"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L27-L32">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_eq"><span class="name">Finsupp</span>.<span class="name">up_eq</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddZeroClass">AddZeroClass</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a</span> <span class="fn">b</span> <span class="fn">c</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.erase">erase</a> <span class="fn">a</span> <span class="fn">f</span></span> <a href=".././Init/Prelude.html#HAdd.hAdd">+</a> <span class="fn"><a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.single">single</a> <span class="fn">a</span> <span class="fn">(<span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span>.<a href=".././Mathlib/Data/Finsupp/Single.html#Finsupp.update">update</a></span> <span class="fn">b</span> <span class="fn">c</span>)</span></span></div></div></div></div><div class="decl" id="Finsupp.up_apply"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L35-L44">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_apply"><span class="name">Finsupp</span>.<span class="name">up_apply</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b'</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a'</span> <span class="fn">b'</span> <span class="fn">c</span>)</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <a href=".././Init/Prelude.html#ite">if</a> <span class="fn">a</span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn">a'</span> <a href=".././Init/Prelude.html#And">∧</a> <span class="fn">b</span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn">b'</span> <a href=".././Init/Prelude.html#ite">then</a> <span class="fn">c</span> <a href=".././Init/Prelude.html#ite">else</a> <span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span></div></div></div></div><div class="decl" id="Finsupp.up_diff"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L47-L51">source</a></div><div class="attributes">@[simp]</div>
+<div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_diff"><span class="name">Finsupp</span>.<span class="name">up_diff</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">hdif</span> : <span class="fn">a</span> <a href=".././Init/Core.html#Ne">≠</a> <span class="fn">a'</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a'</span> <span class="fn">b</span> <span class="fn">c</span>)</span> <span class="fn">a</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">f</span> <span class="fn">a</span></span></div></div></div></div><div class="decl" id="Finsupp.up_diff2"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L54-L63">source</a></div><div class="attributes">@[simp]</div>
+<div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_diff2"><span class="name">Finsupp</span>.<span class="name">up_diff2</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b'</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">hdif</span> : <span class="fn">b</span> <a href=".././Init/Core.html#Ne">≠</a> <span class="fn">b'</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a'</span> <span class="fn">b'</span> <span class="fn">c</span>)</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span></div></div></div></div><div class="decl" id="Finsupp.up_self"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L66-L71">source</a></div><div class="attributes">@[simp]</div>
+<div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_self"><span class="name">Finsupp</span>.<span class="name">up_self</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">γ</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#Zero">Zero</a> <span class="fn">γ</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">γ</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b'</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">c</span> : <span class="fn">γ</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a'</span> <span class="fn">b'</span> <span class="fn">c</span>)</span> <span class="fn">a'</span>)</span> <span class="fn">b'</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn">c</span></div></div></div></div><div class="decl" id="Finsupp.uncurried_swap"><div class="def"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L74-L99">source</a></div><div class="decl_header"><span class="decl_kind">def</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap"><span class="name">Finsupp</span>.<span class="name">uncurried_swap</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn">β</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span></div></div><details><summary>Equations</summary><ul class="equations"><li class="equation"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap">uncurried_swap</a></span> <a href=".././Init/Prelude.html#Eq">=</a>   <span class="fn">{ <span class="fn">support</span> := <span class="fn"><a href=".././Mathlib/Data/Finset/Image.html#Finset.map">Finset.map</a> <a href=".././HelpersLib/Prod.html#Prod.swap_emb">Prod.swap_emb</a> <span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp.support">support</a></span></span>,
+    <span class="fn">toFun</span> := <span class="fn">fun (<span class="fn">x</span> : <span class="fn">β</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">α</span>) =&gt;
+      <span class="fn">match <span class="fn">x</span> with
+      | <a href=".././Init/Prelude.html#Prod.mk">(</a><span class="fn">b</span><a href=".././Init/Prelude.html#Prod.mk">,</a> <span class="fn">a</span><a href=".././Init/Prelude.html#Prod.mk">)</a> =&gt; <span class="fn"><span class="fn">f</span> <span class="fn">(<a href=".././HelpersLib/Prod.html#Prod.swap_emb">Prod.swap_emb</a> <a href=".././Init/Prelude.html#Prod.mk">(</a><span class="fn">b</span><a href=".././Init/Prelude.html#Prod.mk">,</a> <span class="fn">a</span><a href=".././Init/Prelude.html#Prod.mk">)</a>)</span></span></span></span>,
+    <span class="fn">mem_support_toFun</span> := <span class="fn">⋯</span> }</span></li></ul></details><details id="instances-for-list-Finsupp.uncurried_swap" class="instances-for-list"><summary>Instances For</summary><ul class="instances-for-enum"></ul></details></div></div><div class="decl" id="Finsupp.uncurried_swap_def"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L101-L104">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap_def"><span class="name">Finsupp</span>.<span class="name">uncurried_swap_def</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">x</span> : <span class="fn">α</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">β</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap">uncurried_swap</a></span> <span class="fn"><span class="fn">x</span>.<a href=".././Init/Data/Prod.html#Prod.swap">swap</a></span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">f</span> <span class="fn">x</span></span></div></div></div></div><div class="decl" id="Finsupp.uncurried_swap_def'"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L106-L109">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap_def'"><span class="name">Finsupp</span>.<span class="name">uncurried_swap_def'</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">x</span> : <span class="fn">β</span> <a href=".././Init/Prelude.html#Prod">×</a> <span class="fn">α</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap">uncurried_swap</a></span> <span class="fn">x</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">f</span> <span class="fn"><span class="fn">x</span>.<a href=".././Init/Data/Prod.html#Prod.swap">swap</a></span></span></div></div></div></div><div class="decl" id="Finsupp.curried_swap"><div class="def"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L111-L113">source</a></div><div class="decl_header"><span class="decl_kind">noncomputable def</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap"><span class="name">Finsupp</span>.<span class="name">curried_swap</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span></div></div><details><summary>Equations</summary><ul class="equations"><li class="equation"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap">curried_swap</a></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Basic.html#Finsupp.uncurry">uncurry</a></span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.uncurried_swap">uncurried_swap</a></span>.<a href=".././Mathlib/Data/Finsupp/Basic.html#Finsupp.curry">curry</a></span></li></ul></details><details id="instances-for-list-Finsupp.curried_swap" class="instances-for-list"><summary>Instances For</summary><ul class="instances-for-enum"></ul></details></div></div><div class="decl" id="Finsupp.uncurry_curry2"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L117-L122">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.uncurry_curry2"><span class="name">Finsupp</span>.<span class="name">uncurry_curry2</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Basic.html#Finsupp.uncurry">uncurry</a></span>.<a href=".././Mathlib/Data/Finsupp/Basic.html#Finsupp.curry">curry</a></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn">f</span></div></div></div></div><div class="decl" id="Finsupp.uncurry_apply"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L124-L129">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.uncurry_apply"><span class="name">Finsupp</span>.<span class="name">uncurry_apply</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././Mathlib/Data/Finsupp/Basic.html#Finsupp.uncurry">uncurry</a></span> <a href=".././Init/Prelude.html#Prod.mk">(</a><span class="fn">a</span><a href=".././Init/Prelude.html#Prod.mk">,</a> <span class="fn">b</span><a href=".././Init/Prelude.html#Prod.mk">)</a></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span></div></div></div></div><div class="decl" id="Finsupp.curried_swap_def"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L131-L136">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap_def"><span class="name">Finsupp</span>.<span class="name">curried_swap_def</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn">e</span> : <span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap">curried_swap</a></span> <span class="fn">b</span>)</span> <span class="fn">a</span></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn">(<span class="fn">f</span> <span class="fn">a</span>)</span> <span class="fn">b</span></span></div></div></div></div><div class="decl" id="Finsupp.up_swap"><div class="theorem"><div class="gh_link"><a href="https://github.com/Mamboleano/lean4-amm-fees/blob/8901a0b5262ba1550dbf9a95b3a71130f374fcfc/HelpersLib/Finsupp2.lean#L139-L146">source</a></div><div class="decl_header"><span class="decl_kind">theorem</span>
+<span class="decl_name"><a class="break_within" href=".././HelpersLib/Finsupp2.html#Finsupp.up_swap"><span class="name">Finsupp</span>.<span class="name">up_swap</span></a></span><span class="impl_arg"><span class="decl_args">
+<span class="fn">{<span class="fn">α </span><span class="fn">β </span><span class="fn">M</span> : <a href=".././foundational_types.html">Type</a>}</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">α</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Init/Prelude.html#DecidableEq">DecidableEq</a> <span class="fn">β</span></span>]</span></span>
+</span><span class="impl_arg"><span class="decl_args">
+<span class="fn">[<span class="fn"><a href=".././Mathlib/Algebra/Group/Defs.html#AddCommMonoid">AddCommMonoid</a> <span class="fn">M</span></span>]</span></span>
+</span><span class="decl_args">
+<span class="fn">(<span class="fn">f</span> : <span class="fn">α</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">β</span> <a href=".././Mathlib/Data/Finsupp/Defs.html#Finsupp">→₀</a> <span class="fn">M</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">a'</span> : <span class="fn">α</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">b'</span> : <span class="fn">β</span>)</span></span>
+<span class="decl_args">
+<span class="fn">(<span class="fn">m</span> : <span class="fn">M</span>)</span></span>
+<span class="decl_args"> :</span><div class="decl_type"><span class="fn"><span class="fn">(<span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">a'</span> <span class="fn">b'</span> <span class="fn">m</span>)</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap">curried_swap</a></span> <a href=".././Init/Prelude.html#Eq">=</a> <span class="fn"><span class="fn"><span class="fn"><span class="fn">f</span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.curried_swap">curried_swap</a></span>.<a href=".././HelpersLib/Finsupp2.html#Finsupp.up">up</a></span> <span class="fn">b'</span> <span class="fn">a'</span> <span class="fn">m</span></span></div></div></div></div></main>
+<nav class="nav"><iframe src=".././navbar.html" class="navframe" frameBorder="0"></iframe></nav></body></html>

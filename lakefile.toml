@@ -1,18 +1,19 @@
-name = "lean4-amm"
+name = "Lean4-AMMs-Fees"
 version = "0.1.0"
-keywords = ["math"]
-defaultTargets = ["AMMLib", "HelpersLib"]
+defaultTargets = ["lean4-amms-fees"]
 
-[leanOptions]
-pp.unicode.fun = true # pretty-prints `fun a ↦ b`
-autoImplicit = false
+[[lean_lib]]
+name = "AMMLib"
+
+[[lean_lib]]
+name = "HelpersLib"
+globs = ["HelpersLib.*"]
 
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
+rev = "v4.18.0"
 
-[[lean_lib]]
-name = "HelpersLib"
-
-[[lean_lib]]
-name = "AMMLib"
+[[lean_exe]]
+name = "lean4-amms-fees"
+root = "Main"

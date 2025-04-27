@@ -42,24 +42,24 @@ def Swap.additive
     by
        -- Prove the AMM won't be drained, ie. that
        -- r1 in s is greater than sw0.y + sw1.y
-      unfold SX.additive at addi
-      have nodrain' := sw1.nodrain
-      rw [addi x₀ x₁ _ _ sw0.nodrain]
-      have sw1y := y_norm sw1
-      simp at sw1y
-      simp_rw [← y_norm sw0]
-      simp_rw [add_comm _ x₀]
-      rw [← sw1y]
-      simp_rw [← y_norm sw1] at nodrain'
-      simp at nodrain'
-      have nodrain'' := OrderedAddCommGroup.add_lt_add_left nodrain' sw0.y
-      rw [add_comm, add_comm sw0.y, add_comm] at nodrain''
-      simp at nodrain''
-      rw [div_eq_mul_inv]
-      rw [mul_comm, mul_assoc]
-      simp [nodrain'']
-
-      all_goals sorry
+       unfold SX.additive at addi
+       have nodrain' := sw1.nodrain
+       rw [addi x₀ x₁ _ _ sw0.nodrain]
+       have sw1y := y_norm sw1
+       simp only [amms, AMMs.r0_of_add_r0, AMMs.r0_of_sub_r1, AMMs.r1_of_add_r0,
+         AMMs.r1_of_sub_r1] at sw1y
+       simp_rw [← y_norm sw0]
+       simp_rw [add_comm _ x₀]
+       simp_rw [← sw1y]
+       simp_rw [← y_norm sw1] at nodrain'
+       simp only [amms, AMMs.r1_of_add_r0, AMMs.r1_of_sub_r1] at nodrain'
+       have nodrain'' := OrderedAddCommGroup.add_lt_add_left nodrain' sw0.y
+       rw [add_comm, add_comm sw0.y, add_comm] at nodrain''
+       simp only [PReal.sub_y_add_y] at nodrain''
+       rw [div_eq_mul_inv]
+       rw [mul_comm, mul_assoc]
+       rw [inv_mul_cancel, mul_one]
+       exact nodrain''
   ⟩
 
 def Swap.bound_split1
@@ -145,18 +145,22 @@ def Swap.bound_split2
     -- check if t is the same as t0 or t1.
     -- Then use the simplifier to obtain the new balance after swap
   . rcases Decidable.em (t=t0) with eq0|neq0
-    . simp [eq, eq0, sw0.exi.dif,
-            PReal.add_toReal, tsub_add_eq_tsub_tsub]
-      aesop
+    . simp only [atoms, eq, S₀.get_add_self, S₀.get_sub_self, eq0, ne_eq, sw0.exi.dif,
+      not_false_eq_true, W₀.get_add_diff', W₀.get_sub_self, PReal.add_toNNReal, additive_y,
+      tsub_add_eq_tsub_tsub]
     . rcases Decidable.em (t=t1) with eq1|neq1
-      . simp [eq, eq1, sw0.exi.dif, PReal.add_toReal,
-              tsub_add_eq_tsub_tsub, add_assoc]
-      . simp [eq, (Ne.intro neq0).symm, (Ne.intro neq1).symm]
+      . simp only [atoms, eq, S₀.get_add_self, S₀.get_sub_self, eq1, W₀.get_add_self, ne_eq,
+        sw0.exi.dif, not_false_eq_true, W₀.get_sub_diff, add_assoc, NNReal.coe_add,
+        PReal.toNNRealReal_eq_toNNReal, PReal.add_toNNReal]
+        rw [Swap.additive_y' sw0 sw1 (additive sw0 sw1 addi) addi]
+        rw [PReal.add_toReal]
+
+      . simp only [atoms, eq, S₀.get_add_self, S₀.get_sub_self, ne_eq, (Ne.intro neq1).symm,
+        not_false_eq_true, W₀.get_add_diff, (Ne.intro neq0).symm, W₀.get_sub_diff,
+        PReal.add_toNNReal, additive_y]
 
   -- If not the same account, value after swap is unchanged
-  . simp [(Ne.intro neq).symm]
-    -/
-    sorry
+  . simp only [atoms, ne_eq, (Ne.intro neq).symm, not_false_eq_true, S₀.get_add_diffa, S₀.get_sub_diffa, PReal.add_toNNReal, additive_y]
 
 @[simp] theorem Swap.join_additive_amms
   (sw0: Swap sx s a t0 t1 x₀)
@@ -172,16 +176,21 @@ def Swap.bound_split2
   -- Check if the minted token is different
   rcases Decidable.em (diffmint t0 t1 t0' t1') with diffm|samem
     -- If it is, then the AMM is unchanged
-  . simp [apply, diffm]
+  . simp only [apply, diffm, AMMs.r0_of_add_r0_diff₀, AMMs.r0_of_sub_r1_diff₀, PReal.add_toNNReal,
+    additive_y]
 
     -- Otherwise it's updated in the same way
   . rw [not_diffmint_iff_samemint _ _ _ _ sw0.exi.dif] at samem
     rcases samem with ⟨a,b⟩|⟨a,b⟩
-    . simp [apply, a, b, ← add_assoc, add_comm x₁.toNNReal _]
-    . simp [apply, ← a, ← b, sw0.exi.dif,
-            AMMs.r0_reorder₀ _ t1 t0, tsub_add_eq_tsub_tsub]
-  -/
-  sorry
+    . simp only [apply, a, b, AMMs.r0_of_add_r0₀, AMMs.r0_of_sub_r1₀, ← add_assoc,
+      add_comm x₁.toNNReal _, PReal.add_toNNReal, additive_y]
+      ring
+    . simp only [apply, ← b, ← a, AMMs.r0_reorder₀ _ t1 t0, AMMs.r1_of_add_r0₀, AMMs.r1_of_sub_r1₀]
+      have additive_y_eq := Swap.additive_y sw0 sw1 addi
+      rw [additive_y_eq]
+      rw [PReal.add_toNNReal]
+      simp only [tsub_add_eq_tsub_tsub]
+
 
 -- The atom set obtained by applying the consecutive swaps
 -- is the same as the one obtained by applying the additive swap
@@ -196,9 +205,7 @@ def Swap.bound_split2
   rw [Γ.eq_iff]
   rw [Swap.join_additive_amms _ _ addi]
   rw [Swap.join_additive_atoms _ _ addi]
-  simp [Swap.mints]
-  -/
-  sorry
+  simp only [atoms, PReal.add_toNNReal, additive_y, mints, amms, and_self]
 
 /- Lemma 5.7
    Here we do not take outputbound as parameter, because in the original
@@ -218,9 +225,7 @@ theorem Swap.additive_gain
 
   rw [add_comm (a.gain o s sw0.apply)]
   apply eq_add_of_sub_eq
-  sorry
-  /-
-  simp [self_gain_eq, y]
+  simp only [self_gain_eq, y, PReal.mul_toReal, PReal.add_toReal, mints]
 
   rw [← mul_sub_right_distrib]
   rw [sub_right_comm]

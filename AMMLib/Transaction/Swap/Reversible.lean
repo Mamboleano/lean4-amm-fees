@@ -61,7 +61,8 @@ theorem Swap.inv_apply_eq_atoms
   . rcases Decidable.em (t = t0) with eq0|neq0
     . simp [eq0, sw.exi.dif, eqa, sw.enough,
             tsub_add_eq_add_tsub, add_tsub_assoc_of_le]
-      aesop
+      rw [Swap.inv_y_eq_x sw hrev]
+      field_simp
     . rcases Decidable.em (t = t1) with eq1|neq1
       . simp [eqa, neq0, eq1, sw.exi.dif]
       . simp [eqa, neq0, neq1]
@@ -85,7 +86,8 @@ theorem Swap.inv_apply_eq_amms
   . rw [not_diffmint_iff_samemint _ _ _ _ sw.exi.dif] at samem
     rcases samem with ⟨a,b⟩|⟨a,b⟩
     . simp [← a, ← b, sw.exi]
-      aesop
+      rw [Swap.inv_y_eq_x sw hrev]
+      field_simp
     . simp [← a, ← b, sw.exi, sw.exi.swap, s.amms.r0_reorder₀ t1 t0]
       rw [← add_tsub_assoc_of_le (le_of_lt sw.y_lt_r1₀)]
       rw [add_comm]
@@ -98,10 +100,10 @@ theorem Swap.inv_apply_eq_amms
   (sw.inv hrev).apply = s := by
 
   rw [Γ.eq_iff]
-  rw [inv_apply_eq_atoms]
+  rw [inv_apply_eq_atoms sw hrev]
   rw [inv_apply_eq_amms]
-  all_goals aesop
-
+  simp_all!
+  aesop
 
 theorem Swap.rev_gain
   (sw: Swap sx s a t0 t1 x) (hrev: SX.reversible sx hbound)
@@ -111,4 +113,4 @@ theorem Swap.rev_gain
     simp only [inv_y_eq_x, mints, (s.mints.get a).get_reorder t1 t0,
                s.mints.supply_reorder t1 t0]
     rw [← neg_mul, neg_sub]
-    aesop
+    field_simp

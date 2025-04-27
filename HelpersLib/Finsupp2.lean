@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Data.Finsupp.Basic
+import Mathlib.Data.Finsupp.Defs
 import HelpersLib.Prod
 
 -- If g gives you zero for an element,
@@ -113,7 +114,7 @@ noncomputable def Finsupp.curried_swap {α β M: Type} [AddCommMonoid M]
 
 -- Copied from finsuppProdEquiv.left_inv
 -- I couldn't figure out how to reuse it
-theorem Finsupp.uncurry_curry {α β M: Type} [e: AddCommMonoid M]
+theorem Finsupp.uncurry_curry2 {α β M: Type} [e: AddCommMonoid M]
   (f: α →₀ β →₀ M):
   f.uncurry.curry = f := by
   simp only [Finsupp.curry, Finsupp.uncurry, sum_sum_index, sum_zero_index, sum_add_index,
@@ -124,7 +125,7 @@ theorem Finsupp.uncurry_apply {α β M: Type} [e: AddCommMonoid M]
   (f: α →₀ β →₀ M) (a: α) (b: β):
   f.uncurry (a,b) = f a b := by
   conv => rhs
-          rw [← uncurry_curry f]
+          rw [← uncurry_curry2 f]
   rw [curry_apply]
 
 theorem Finsupp.curried_swap_def {α β M: Type} [e: AddCommMonoid M]

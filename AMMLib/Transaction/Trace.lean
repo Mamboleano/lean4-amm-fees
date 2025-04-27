@@ -65,7 +65,6 @@ swap: use IH.
       swaps don't change minted token supplies
 -/
 
-variable {sx : SX} {s : Γ} {t0 t1 : T}
 
 /- If a state is reachable and an AMM has been initialized in it,
    then the supply of the AMM's minted token is greater than zero. -/
@@ -148,9 +147,14 @@ theorem AMMimpMintSupply (r: reachable sx s)
       -- incremented the supply.
       . rw [not_diffmint_iff_samemint _ _ _ _ d.exi.dif] at samemi
         rcases samemi with ⟨a,b⟩|⟨a,b⟩
-        . simp [← a, ← b, d.v.zero_lt_toNNReal]
+        . simp only [Deposit.mints, a, b, S₁.supply_of_add_self, add_pos_iff, d.v.zero_lt_toNNReal, or_true]
+          simp_all
         . rw [S₁.supply_reorder _ t0 t1]
-          simp [← a, ← b, d.v.zero_lt_toNNReal]
+          simp only [Deposit.mints, a, b, S₁.supply_of_add_self, add_pos_iff, d.v.zero_lt_toNNReal, or_true]
+          simp_all only [gt_iff_lt, forall_const, true_or]
+          rw [S₁.supply_reorder _ t0 t1] at ih
+          simp [ih]
+
 
 
   -- Redeem: by cases on the redeemed tokens.

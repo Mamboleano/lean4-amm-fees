@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.NNReal.Basic
+import Mathlib.Algebra.Order.Positive.Field
+import Mathlib.Algebra.Order.Positive.Ring
 open NNReal
 
 /- This code is mostly copied and adapted from NNReal. -/
@@ -16,8 +19,6 @@ namespace PReal
 @[coe] def toReal : ℝ>0 → ℝ := Subtype.val
 instance : Coe ℝ>0 ℝ := ⟨toReal⟩
 
-
-
 @[coe] def toNNReal : ℝ>0 → NNReal := λ x => ⟨Subtype.val x, le_of_lt x.2⟩
 instance : Coe ℝ>0 NNReal := ⟨toNNReal⟩
 
@@ -27,6 +28,8 @@ theorem val_eq_toNNReal (n : ℝ>0) : n.val = n :=
   rfl
 
 theorem toReal_pos (x: ℝ>0): (0:ℝ) < x := x.2
+
+theorem eq_iff_toReal_eq (x y : ℝ>0) : x = y ↔ (↑x:ℝ) = (↑y:ℝ) := by aesop
 
 theorem toReal_ne_zero (x: ℝ>0)
 : (x: ℝ) ≠ 0 := (ne_of_lt x.toReal_pos).symm
@@ -69,17 +72,20 @@ theorem zero_lt_toNNReal (x: ℝ>0): 0 < (x: ℝ≥0) :=
 @[simp] lemma inv_toNNReal (x: ℝ>0):
   ((x⁻¹): ℝ>0) = (x: ℝ≥0)⁻¹ := by rfl
 
+lemma sq_toReal (x: ℝ>0):
+  ((x ^ 2): ℝ>0) = (x: ℝ) ^ 2 := by rfl
+
 theorem toReal_injective : Function.Injective toReal := Subtype.coe_injective
 
 @[simp] lemma toReal_eq_toReal_iff (x y: ℝ>0):
   x = y ↔ (x: ℝ) = (y: ℝ) := toReal_injective.eq_iff.symm
 
 theorem toNNReal_injective : Function.Injective toNNReal :=
-  λ (x y) =>
-  by intro h; unfold toNNReal at h;
-     rw [← NNReal.coe_inj] at h
-     simp at h
-     aesop
+  λ (x y) => by
+    intro h; unfold toNNReal at h;
+    rw [← NNReal.coe_inj] at h
+    simp at h
+    exact h
 
 lemma toNNReal_eq_toNNReal_iff (x y: ℝ>0):
   (x: ℝ≥0) = (y: ℝ≥0) ↔ x = y := toNNReal_injective.eq_iff
@@ -115,3 +121,6 @@ theorem add_div'' {α: Type}
   ((⟨x, h⟩: ℝ>0): ℝ≥0) = (x.toNNReal) := by
   rw [← NNReal.coe_inj]
   simp [max_eq_left_of_lt h]
+
+theorem toReal_one_eq_Real_one :
+  (↑(1 : ℝ>0) : ℝ) = (1 : ℝ) := by rfl

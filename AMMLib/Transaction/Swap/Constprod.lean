@@ -27,7 +27,7 @@ theorem SX.constprod.reversible:
   rw [one_div, inv_div, add_comm]
 
 theorem SX.constprod.homogeneous:
-  homogeneous constprod := by
+  SX.homogeneous SX.constprod := by
   unfold SX.homogeneous
   intro a x r0 r1
   unfold constprod
@@ -68,15 +68,69 @@ macro_rules
   | `(tactic| nuclear) => `(tactic| (ring_nf; try field_simp; try ring_nf))
 
 theorem SX.constprod.additive: SX.additive SX.constprod := by
-  unfold SX.additive SX.constprod
+  unfold SX.additive
   intro x y r0 r1 h
-  have : (x: ℝ) > 0 := by aesop
-  have : (y: ℝ) > 0 := by aesop
-  have : (r0: ℝ) > 0 := by aesop
-  have : (r1: ℝ) > 0 := by aesop
+  have desimp: y*r1 = (y*r0*r1 + y*x*r1)/(r0+x) := by
+    symm
+    rw [mul_comm y x, mul_comm y r0]
+    rw [mul_assoc, mul_assoc]
+    rw [← right_distrib]
+    rw [mul_comm, div_eq_mul_inv, mul_assoc]
+    simp
+  simp_rw [constprod]
+  rw [div_eq_div_iff_mul_eq_mul]
+  rw [right_distrib]
+  simp_rw [mul_div]
+  rw [PReal.mul_sub']
+  simp_rw [mul_div, desimp]
+  rw [PReal.div_sub_div_same' _ _ _ (by simp [mul_assoc])]
+  simp_rw [← mul_assoc]
+  rw [PReal.add_sub]
+  simp_rw [div_mul]
+  rw [div_right_comm]
+  rw [div_div]
+  simp_rw [div_eq_mul_inv]
+  rw [mul_inv _ (r0 + x)]
+  rw [mul_inv (r0 + x + y)]
+  rw [mul_assoc _ _ ((r0+x)⁻¹)]
+  rw [← mul_inv]
+  rw [mul_comm _ (r0+x)]
+  rw [← mul_assoc]
+  rw [← right_distrib]
+  rw [eq_mul_inv_iff_mul_eq]
+  rw [← mul_assoc]
+  rw [mul_inv_eq_iff_eq_mul]
+  rw [right_distrib]
+  rw [mul_assoc (y*r0*r1) _ (r0 + (x + y))]
+  rw [add_assoc]
+  rw [inv_mul_cancel, mul_one]
+  rw [left_distrib, left_distrib, right_distrib, right_distrib,
+      left_distrib, left_distrib]
+  rw [← add_assoc, ← add_assoc]
+  rw [mul_comm r1 x]
+  rw [add_assoc _ _ (x*r1*x), add_comm _ ((x*r1*x))]
+  rw [mul_rotate x r1 r0]
+  rw [←add_assoc]
+  rw [← add_rotate _ _ (r1*y*r0)]
+  rw [mul_rotate y r0 r1, mul_rotate r0 r1 y]
+  rw [add_left_inj]
+  rw [add_comm (r1*y*x) _, add_right_inj]
+  rw [← mul_rotate]
 
-  nuclear
 
+/-
+START
+p0 / p1 ≤ r1 / (r0 + x)
+
+p1/p0 ≥ (r0+x)/r1                          inversion
+(r0+x)/r1 ≤ p1/p0                          side switch
+r0/r1 + x/r1 ≤ p1/p0                       div of sum
+r0/r1 < r0/r1 + x/r1 ≤ p1/p0               by positivity
+r0/(r1+y) < r0/r1 < r0/r1 + x/r1 ≤ p1/p0   by greater denumerator
+
+GOAL
+r0 / (r1 + y) < p1 / p0                 by transitivity
+-/
 theorem SX.constprod.exchrate_vs_oracle
   (x r0 r1 p0 p1: ℝ>0)
   (h: p0/p1 ≤ constprod x r0 r1):
@@ -144,14 +198,7 @@ theorem SX.constprod.optimality_suff
 
     have sw3_rate_lt_exch: sw3.rate < o t0 / o t1 := by
       simp [Swap.rate, SX.constprod, ← h]
-      aesop
-
-    have sw3_gain_neg : a.gain o sw1.apply sw3.apply < 0 := by
-      exact (Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch
-
-    nlinarith
-
-    -- simp only [(Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch]
+    simp only [add_lt_iff_neg_left, (Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch]
 
   . have le: x ≤ x₀ := not_lt.mp nle
     have lt: x < x₀ := hdif.symm.lt_of_le' le
@@ -165,7 +212,7 @@ theorem SX.constprod.optimality_suff
     rw [← Swap.rev_gain sw3 rev o]
 
     have sw3_invrate_lt: (sw3.inv rev).rate < o t1 / o t0 := by
-      rw [Swap.rate_of_inv_eq_inv_rate]
+      rw [Swap.rate_of_inv_eq_inv_rate sw3 rev]
       rw [inv_lt', inv_div]
       rw [← h]
       unfold Swap.rate
@@ -200,8 +247,7 @@ theorem SX.constprod.optimality_suff
       simp [hzero]
 
     have hzero': (sw3.apply.mints.get a).get t1 t0 = 0 := by
-      rw [W₁.get_reorder _ t1 t0]
-      simp [sw3, hzero'', hzero]
+      simp only [Swap.mints, W₁.get_reorder _ t1 t0, hzero]
 
     have sw3_inv_gain_neg :=
       (Swap.swaprate_vs_exchrate_lt (sw3.inv rev) o hzero').mpr sw3_invrate_lt
@@ -220,31 +266,11 @@ theorem SX.constprod.arbitrage_solve
     simp [Swap.y, Swap.rate, constprod, h]
     simp_rw [sub_mul] -- right distrib step
     simp_rw [div_eq_mul_inv]
-
-    have rad0 : (√(↑(o t1) * (↑(o t0))⁻¹ * ↑(s.amms.r0 t0 t1 (by simp[sw.exi])) * ↑(s.amms.r1 t0 t1 (by simp[sw.exi]))) : ℝ) ≠ 0 := by
-      apply ne_of_gt
-      rw [← PReal.inv_toReal, ← PReal.mul_toReal, ← PReal.mul_toReal, ← PReal.mul_toReal, ← PReal.sqrt_to_real]
-      simp [PReal.toReal_pos]
-    simp_rw [mul_comm (s.amms.r1 t0 t1 sw.exi : ℝ) _, ← mul_assoc _ _ (s.amms.r1 t0 t1 sw.exi : ℝ), GroupWithZero.mul_inv_cancel (√(↑(o t1) * (↑(o t0))⁻¹ * ↑(s.amms.r0 t0 t1 (by simp[sw.exi])) * ↑(s.amms.r1 t0 t1 (by simp[sw.exi]))) : ℝ) rad0, one_mul] -- simp x/x
-    field_simp
-    nuclear
+    simp_rw [mul_comm (s.amms.r1 t0 t1 sw.exi) _, ← mul_assoc _ _ (s.amms.r1 t0 t1 sw.exi), mul_inv_cancel, one_mul] -- simp x/x
+    simp_rw [PReal.sub_sub'', add_comm (s.amms.r1 t0 t1 sw.exi) _, PReal.sub_of_add]
+    rw [mul_comm, ← mul_assoc, mul_comm (s.amms.r0 t0 t1 sw.exi) _, ←mul_assoc, ←mul_inv, PReal.mul_self_sqrt _]
+    simp_rw [mul_inv]; rw [inv_inv]
+    rw [mul_assoc, mul_assoc, mul_assoc, mul_comm _ (o t0)]
     simp
-    have : 0 ≤ (↑(s.amms.r0 t0 t1 (by simp[sw.exi])) * ↑(s.amms.r1 t0 t1 (by simp[sw.exi])) * ↑(o t1) * (↑(o t0))⁻¹: ℝ) := by
-      rw [← PReal.mul_toReal, ← PReal.inv_toReal, ← PReal.mul_toReal, ← PReal.mul_toReal]
-      apply LT.lt.le
-      simp [PReal.toReal_pos]
-
-    rw [Real.sq_sqrt this]
-    rw [mul_inv, mul_inv, mul_inv]
-    simp
-    clear * -
-    have sar0pos : (s.amms.r0 t0 t1 (by simp[sw.exi]) : ℝ) ≠ 0 := by apply ne_of_gt; simp [PReal.toReal_pos]
-    have sar1pos : (s.amms.r1 t0 t1 (by simp[sw.exi]) : ℝ) ≠ 0 := by apply ne_of_gt; simp [PReal.toReal_pos]
-    calc (↑(s.amms.r0 t0 t1 (by simp[sw.exi])) : ℝ) * ↑(s.amms.r1 t0 t1 (by simp[sw.exi])) * ((↑(s.amms.r0 t0 t1 (by simp[sw.exi])))⁻¹ * (↑(s.amms.r1 t0 t1 (by simp[sw.exi])))⁻¹ * (↑(o t1))⁻¹ * ↑(o t0))
-    _ = ((↑(s.amms.r0 t0 t1 (by simp[sw.exi])) : ℝ) * ((↑(s.amms.r0 t0 t1 (by simp[sw.exi])))⁻¹) * (↑(s.amms.r1 t0 t1 (by simp[sw.exi])) * (↑(s.amms.r1 t0 t1 (by simp[sw.exi])))⁻¹) * (↑(o t1))⁻¹ * ↑(o t0)) := by nuclear
-    _ = (↑(s.amms.r1 t0 t1 (by simp[sw.exi])) * (↑(s.amms.r1 t0 t1 (by simp[sw.exi])))⁻¹) * (↑(o t1))⁻¹ * ↑(o t0) := by simp [GroupWithZero.mul_inv_cancel _ sar0pos]
-    _ = (↑(o t1))⁻¹ * ↑(o t0) := by simp [GroupWithZero.mul_inv_cancel _ sar1pos]
-    _ = (↑(o t0) : ℝ) * (↑(o t1) : ℝ)⁻¹ := by ring_nf
-
 
   exact optimality_suff sw o aligned

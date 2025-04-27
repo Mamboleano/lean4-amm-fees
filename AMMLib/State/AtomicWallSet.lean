@@ -24,13 +24,13 @@ noncomputable def S₀.add (s: S₀) (a: A) (t: T) (x: ℝ≥0): S₀ :=
 
 @[simp] theorem S₀.get_add_self (s: S₀) (a: A) (t: T) (x: ℝ≥0):
   (s.add a t x).get a = (s.get a).add t x := by
-  unfold get add
+  delta get add
   simp
 
 @[simp] theorem S₀.get_add_diffa (s: S₀) (a: A) (t: T) (x: ℝ≥0)
   (a': A) (hdif: a ≠ a'):
   (s.add a t x).get a' = s.get a' := by
-  unfold get add
+  delta get add
   simp [hdif.symm]
 
 noncomputable def S₀.sub (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t): S₀ :=
@@ -38,11 +38,14 @@ noncomputable def S₀.sub (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get 
 
 @[simp] theorem S₀.get_sub_self (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t):
   (s.sub a t x h).get a = (s.get a).sub t x h := by
-  unfold get sub; simp
+  delta get sub
+  simp
 
 @[simp] theorem S₀.get_sub_diffa (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t) (a': A) (hdif: a ≠ a'):
   (s.sub a t x h).get a' = s.get a' := by
-  unfold get sub; simp[hdif.symm]
+  delta get sub
+  simp
+  simp [hdif.symm]
 
 noncomputable def S₀.drainw (s: S₀) (a: A): S₀ :=
   ⟨Finsupp.erase a s.map⟩
