@@ -15,7 +15,6 @@ theorem SX.fee.constprod.outputbound: SX.outputbound (SX.fee.constprod φ) := by
   unfold SX.outputbound
   intro x r0 r1
   unfold fee.constprod
-  rw [← PReal.toReal_lt_toReal_iff]
   field_simp
   rw [_root_.div_lt_iff₀ _ ]
   ring_nf!
@@ -103,7 +102,7 @@ theorem SX.fee.φ_r1_sub_α_x_simp :
     simp_rw [← mul_assoc φ, ← mul_assoc (φ*x), ← mul_assoc (φ*r1)]
     conv in φ * x * φ * r1 =>
       rw [mul_assoc, mul_comm φ r1, mul_mul_mul_comm, mul_comm x φ, ← mul_assoc]
-    simp
+    simp only [PReal.add_sub, div_left_inj, PReal.mul_toReal]
     rw [mul_assoc, mul_comm r1, ←mul_assoc]
 
     rw [left_distrib]
@@ -112,6 +111,7 @@ theorem SX.fee.φ_r1_sub_α_x_simp :
     conv =>
       lhs; rw [mul_comm x φ]
     simp
+    aesop
 
 theorem SX.fee.constprod.rate_toReal
   (sw0: Swap (constprod φ) s a t0 t1 x₀):
@@ -260,6 +260,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
     unfold constprod int_rate
     unfold Swap.rate
     simp
+    aesop
 
   theorem SX.fee.constprod.sx_rate_gt_int_rate_post_swap (sw: Swap (SX.fee.constprod φ) s a t0 t1 x) (hφ: φ ≤ 1) :
       sw.rate >
@@ -271,7 +272,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
     set_and_subst_reserves s.amms t0 t1 sw.exi
 
     have hh : φ * PReal.sub r1 (x * (SX.fee.constprod φ) x r0 r1) (by exact sw.nodrain) * (r0 + φ * x) < φ * r1 * (r0 + x) := by
-      rw [← PReal.toReal_lt_toReal_iff]
+      --rw [← PReal.toReal_lt_toReal_iff]
       simp
       rw [mul_sub (↑φ : ℝ), sub_mul]
       rw [← sub_lt_zero, sub_sub, add_comm _ (↑φ * ↑r1 * (↑r0 + ↑x) : ℝ), ←sub_sub]
@@ -346,7 +347,7 @@ theorem SX.fee.constprod.r1_lt_split_after_swap
       have hβ := SX.fee.constprod.beta_simp φ x₁ x₂ r0 r1 sw1.nodrain
       rw [hβ]
 
-      rw [←PReal.toReal_lt_toReal_iff]
+      --rw [←PReal.toReal_lt_toReal_iff]
       unfold constprod
       simp
       rw [mul_div, mul_div, mul_div]

@@ -136,7 +136,6 @@ def Swap.bound_split2
   (addi: SX.additive sx):
   sw1.apply.atoms = (additive sw0 sw1 addi).apply.atoms := by
 
-  /-
   -- Apply functional extensionality lemma
   ext a' t
 
@@ -168,7 +167,6 @@ def Swap.bound_split2
   (addi: SX.additive sx):
   sw1.apply.amms = (additive sw0 sw1 addi).apply.amms := by
 
-  /-
   -- Apply extensionality lemma
   rw [AMMs.eq_iff]
   intro t0' t1'
@@ -199,7 +197,6 @@ def Swap.bound_split2
   (sw1: Swap sx sw0.apply a t0 t1 x₁)
   (addi: SX.additive sx):
   sw1.apply = (additive sw0 sw1 addi).apply := by
-  /-
 
   -- State equality lemma
   rw [Γ.eq_iff]
@@ -241,7 +238,6 @@ theorem Swap.additive_gain
   unfold y
   simp_rw [PReal.add_toReal, PReal.mul_toReal]
   rw [add_comm, ← add_sub, sub_self, add_zero]
-  -/
 
 theorem Swap.apply_same_val
   (sw0: Swap sx s a t0 t1 x₀)

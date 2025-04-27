@@ -47,8 +47,7 @@ theorem sub_div_aux (x y z: ℝ>0) (h : y < x * z): y / z < x := by
 
 theorem sub_div (x y z: ℝ>0) (h: y < x*z):
   x.sub (y/z) (by exact sub_div_aux x y z h) = ((x*z).sub y h)/z := by
-    rw [← toReal_eq_toReal_iff]
-    simp [div_sub_div_same (x.toReal) y z]
+    simp
     ring_nf!
     field_simp
     ring_nf!

@@ -71,13 +71,13 @@ def SX.fee.extended_additivity (sx : SX) : Prop :=
   ∀ (x y r0 r1: ℝ>0) (ho : SX.outputbound sx),
 
   sx (x+y) r0 r1 =
-    ((x*(sx x r0 r1) + y*(sx y (r0+x) (r1.sub (x*(sx x r0 r1)) (by aesop)))) / (x + y)) * (z φ x y r0)
+    ((x*(sx x r0 r1) + y*(sx y (r0+x) (r1.sub (x*(sx x r0 r1)) (by exact ho x r0 r1)))) / (x + y)) * (z φ x y r0)
 
 theorem SX.fee.z_factor_gt_1 (hφ : φ < 1):
   z φ x y r0 > 1 := by
 
   unfold z
-  simp
+  simp only [gt_iff_lt, one_lt_div', PReal.mul_toReal, PReal.add_toReal]
 
   conv =>
     lhs

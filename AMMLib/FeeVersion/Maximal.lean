@@ -18,7 +18,7 @@ theorem SX.fee.constprod.x_max_pos_cond (sw0: Swap (SX.fee.constprod φ) s a t0 
   (o t0).sqrt * ((s.amms.r0 t0 t1 sw0.exi) + φ * x₀) < ((o t1) * φ * (s.amms.r0 t0 t1 sw0.exi) * (s.amms.r1 t0 t1 sw0.exi)).sqrt := by
 
   set_and_subst_reserves s.amms t0 t1 sw0.exi
-  apply (PReal.toReal_lt_toReal_iff _ _).mp
+  apply (PReal.toReal_lt_toReal_iff _ _).mpr
   rw [PReal.sqrt_to_real]
   rw [PReal.mul_toReal, PReal.add_toReal, PReal.mul_toReal]
   repeat rw [PReal.mul_toReal]
@@ -107,7 +107,7 @@ theorem SX.fee.constprod.x_max_lt_x₀_div_φ (sw0: Swap (SX.fee.constprod φ) s
     rw [PReal.div_lt_div_denum_right, div_one]
     rw [div_lt_iff_lt_mul]
 
-    apply (PReal.toReal_lt_toReal_iff _ _).mp
+    apply (PReal.toReal_lt_toReal_iff _ _).mpr
     rw [PReal.sub_toReal]
     rw [PReal.sqrt_to_real]
     repeat rw [PReal.mul_toReal]
@@ -158,7 +158,9 @@ theorem SX.fee.constprod.gain_xmax_gt_x₀
   (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
     A.gain a o s (Swap.apply sw0) < A.gain a o s (Swap.apply sw_max) := by
 
-    have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; aesop
+    have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by
+      unfold x_max
+      simp [PReal.toReal_pos]
     have bound: SX.outputbound (SX.fee.constprod φ) := SX.fee.constprod.outputbound φ
     have additive: SX.fee.extended_additivity φ (SX.fee.constprod φ) := SX.fee.constprod.extended_additivity φ
 
@@ -192,7 +194,7 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
   (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
     A.gain a o s (Swap.apply sw2) < A.gain a o s (Swap.apply sw_max) := by
 
-    have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; aesop
+    have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; simp [PReal.toReal_pos]
     have bound: SX.outputbound (SX.fee.constprod φ) := SX.fee.constprod.outputbound φ
     have additive: SX.fee.extended_additivity φ (SX.fee.constprod φ) := SX.fee.constprod.extended_additivity φ
 
@@ -265,6 +267,7 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
     have x_max'_eq_def : x_max' = (SX.fee.constprod.x_max' φ sw0 o h_equil hφ) := by
       unfold x_max at x_max_split
       simp at x_max_split
+      simp
       exact x_max_split.symm
     have x_max_eq_cond : (↑(o t0) : ℝ).sqrt * (A + ↑φ*↑x_max') = ((↑(o t1) : ℝ) * ↑φ * ↑r0 * ↑r1).sqrt := by
       rw [ha, hr0, hr1, x_max'_eq_def]
@@ -331,11 +334,12 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
         . apply mul_pos
           . simp [A_pos]
           . simp at x₁_diff_x_max'
-            rw [PReal.eq_iff_toReal_eq] at x₁_diff_x_max'
+            rw [(PReal.eq_iff_toReal_eq _ _).symm] at x₁_diff_x_max'
             rw [←ne_eq] at x₁_diff_x_max'
             rw [sq_pos_iff]
             rw [sub_ne_zero]
-            exact x₁_diff_x_max'.symm
+            simp at x₁_diff_x_max'
+            aesop
         . exact PReal.toReal_pos _
       . exact PReal.toReal_pos _
     . apply add_pos
@@ -365,7 +369,7 @@ theorem SX.fee.constprod.x_max_gain
         have gain_x_lt_x₀ := hsol x sw2 le no_mints
         exact lt_trans gain_x_lt_x₀ gain_x₀_lt_x_max
       -- Case x ≥ x₀
-      . simp at nle
+      . simp only [not_lt] at nle
         rcases lt_or_eq_of_le nle with lt_x₀_x|eq_x₀_x
         -- Case x > x₀
         . exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max lt_x₀_x h_diff no_mints
@@ -374,6 +378,6 @@ theorem SX.fee.constprod.x_max_gain
           exact gain_x₀_lt_x_max
 
     -- Case x > x_max
-    . have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; aesop
+    . have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; simp [PReal.toReal_pos]
       have x_gt_x₀ : x > x₀ := lt_trans x₀_lt_x_max hx_gt
       exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ h_diff no_mints

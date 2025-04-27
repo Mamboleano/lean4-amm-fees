@@ -86,10 +86,9 @@ theorem sub_lt_iff (x y z: ℝ>0) (h: y<x):
 
 theorem add_lt_iff (x y z: ℝ>0) (h: x < z):
   x + y < z ↔ y < z.sub x h := by
-  simp_rw [← toReal_lt_toReal_iff]
-  simp [sub_lt_iff_lt_add]
+  simp
+  simp [lt_sub_iff_add_lt]
   rw [add_comm]
-  exact lt_sub_iff_add_lt.symm
 
 theorem sub_sub'' (x y z: ℝ>0) (h1: z < y) (h2: y.sub z h1 < x): -- x - (y - z) = x - y + z = x + z - y
   x.sub (y.sub z h1) h2 = (x+z).sub y ((sub_lt_iff _ _ _ _).mp h2) := by

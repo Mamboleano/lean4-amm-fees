@@ -4,14 +4,10 @@ import AMMLib.Transaction.Swap.Reversible
 import HelpersLib.PReal.Sqrt
 import HelpersLib.PReal.Order
 
-set_option maxHeartbeats 2000000
-
-variable {sx : SX} {s : Γ} {a : A} {t0 t1 : T} {v0 x₀ x₁ x x': ℝ>0}
-
 noncomputable def SX.constprod: SX :=
   λ (x r0 r1: ℝ>0) => r1/(r0 + x)
 
-theorem SX.constprod.outputbound: SX.outputbound SX.constprod := by
+def SX.constprod.outputbound: SX.outputbound SX.constprod := by
   unfold SX.outputbound
   intro x r0 r1
   unfold constprod
@@ -19,7 +15,7 @@ theorem SX.constprod.outputbound: SX.outputbound SX.constprod := by
   rw [left_distrib, mul_comm x r1]
   exact PReal.lt_add_left _ _
 
-theorem SX.constprod.reversible:
+def SX.constprod.reversible:
   SX.reversible SX.constprod SX.constprod.outputbound := by
   unfold SX.reversible constprod
   intro x r0 r1
@@ -63,10 +59,6 @@ theorem SX.constprod.strictmono:
     rw [← div_eq_mul_inv, div_le_div_iff']
     exact mul_le_mul' c h'
 
-syntax "nuclear" : tactic
-macro_rules
-  | `(tactic| nuclear) => `(tactic| (ring_nf; try field_simp; try ring_nf))
-
 theorem SX.constprod.additive: SX.additive SX.constprod := by
   unfold SX.additive
   intro x y r0 r1 h
@@ -83,7 +75,7 @@ theorem SX.constprod.additive: SX.additive SX.constprod := by
   simp_rw [mul_div]
   rw [PReal.mul_sub']
   simp_rw [mul_div, desimp]
-  rw [PReal.div_sub_div_same' _ _ _ (by simp [mul_assoc])]
+  rw [PReal.div_sub_div_same' _ _ _ (by simp [mul_assoc]; aesop)]
   simp_rw [← mul_assoc]
   rw [PReal.add_sub]
   simp_rw [div_mul]
@@ -149,6 +141,22 @@ theorem SX.constprod.exchrate_vs_oracle
     _     > r0/r1        := PReal.gt_add_right _ _
     _     > r0/(r1+y)    := PReal.div_lt_add_denum _ _ _
 
+
+/-
+Unique direction for swap gains Sketch Proof
+With sw1,sw2,sx1,sx2 for original and swapped
+
+h0: We know mintedb = 0
+h1: We know gain sw1 > 0
+            0 < gain sw1
+            sx1 > p0/p1    by lemma 3.3 with h0
+
+Goal:
+  gain sw2 < 0
+  sx2 < p1/p0   by lemma 3.3 with h0
+  p0/p1 ≤ sx x r0 r1 by applying lemma 6.1
+  Qed by h1
+-/
 theorem SX.constprod.gain_direction
   (sw1: Swap SX.constprod s a t0 t1 x)
   (sw2: Swap SX.constprod s a t1 t0 x') (o: O)
@@ -198,6 +206,7 @@ theorem SX.constprod.optimality_suff
 
     have sw3_rate_lt_exch: sw3.rate < o t0 / o t1 := by
       simp [Swap.rate, SX.constprod, ← h]
+      aesop
     simp only [add_lt_iff_neg_left, (Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch]
 
   . have le: x ≤ x₀ := not_lt.mp nle
@@ -241,11 +250,6 @@ theorem SX.constprod.optimality_suff
       rw [mul_comm _ x₁, mul_comm x _, ← mul_assoc]
       exact PReal.lt_add_right _ _
 
-      all_goals sorry
-
-    have hzero'': (sw2.apply.mints.get a).get t0 t1 = 0 := by
-      simp [hzero]
-
     have hzero': (sw3.apply.mints.get a).get t1 t0 = 0 := by
       simp only [Swap.mints, W₁.get_reorder _ t1 t0, hzero]
 
@@ -253,7 +257,6 @@ theorem SX.constprod.optimality_suff
       (Swap.swaprate_vs_exchrate_lt (sw3.inv rev) o hzero').mpr sw3_invrate_lt
 
     exact lt_add_of_pos_right _ (neg_pos.mpr sw3_inv_gain_neg)
-
 
 theorem SX.constprod.arbitrage_solve
   (sw: Swap SX.constprod s a t0 t1 x₀)
@@ -263,8 +266,9 @@ theorem SX.constprod.arbitrage_solve
   sw.is_solution o := by
 
   have aligned: sw.apply.amms.r1 t0 t1 (by simp[sw.exi]) / sw.apply.amms.r0 t0 t1 (by simp[sw.exi]) = (o t0) / (o t1) := by
-    simp [Swap.y, Swap.rate, constprod, h]
-    simp_rw [sub_mul] -- right distrib step
+    simp only [h, Swap.amms, Swap.y, Swap.rate, constprod, PReal.add_y_sub_y, AMMs.r1_of_add_r0,
+      AMMs.r1_of_sub_r1, AMMs.r0_of_add_r0, AMMs.r0_of_sub_r1, PReal.sub_y_add_y]
+    simp_rw [PReal.sub_mul'] -- right distrib step
     simp_rw [div_eq_mul_inv]
     simp_rw [mul_comm (s.amms.r1 t0 t1 sw.exi) _, ← mul_assoc _ _ (s.amms.r1 t0 t1 sw.exi), mul_inv_cancel, one_mul] -- simp x/x
     simp_rw [PReal.sub_sub'', add_comm (s.amms.r1 t0 t1 sw.exi) _, PReal.sub_of_add]

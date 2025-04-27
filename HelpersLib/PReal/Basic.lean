@@ -85,7 +85,8 @@ theorem toNNReal_injective : Function.Injective toNNReal :=
     intro h; unfold toNNReal at h;
     rw [← NNReal.coe_inj] at h
     simp at h
-    exact h
+    simp_all only [toReal_eq_toReal_iff]
+
 
 lemma toNNReal_eq_toNNReal_iff (x y: ℝ>0):
   (x: ℝ≥0) = (y: ℝ≥0) ↔ x = y := toNNReal_injective.eq_iff

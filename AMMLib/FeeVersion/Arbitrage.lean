@@ -340,7 +340,8 @@ theorem SX.fee.arbitrage.add_gain_εφ_neg
         rw [←mul_one (↑x₀ : ℝ)]
         rw [←div_self (PReal.toReal_ne_zero φ), mul_div]
       rw [←add_div, sub_mul, add_sub, one_mul, add_comm, add_sub_assoc, mul_comm, sub_self, add_zero]
-      rw [←PReal.div_toReal, PReal.toReal_lt_toReal_iff]
+      rw [←PReal.div_toReal]
+    aesop
 
 
 theorem SX.fee.arbitrage.add_gain_εφ_pos
@@ -417,7 +418,8 @@ theorem SX.fee.arbitrage.add_gain_εφ_pos
         rw [←div_self (PReal.toReal_ne_zero φ), mul_div]
 
       rw [←add_div, sub_mul, mul_comm (↑φ: ℝ), sub_add_cancel, one_mul]
-      rw [←PReal.div_toReal, PReal.toReal_lt_toReal_iff]
+      rw [←PReal.div_toReal]
+    aesop
 
 
 theorem SX.fee.arbitrage.constprod.solution_more
@@ -660,7 +662,6 @@ theorem SX.fee.arbitrage.constprod.solution_equil_unique
       simp
       rw [←hr0]
       rw [left_distrib, left_distrib, right_distrib, right_distrib, right_distrib, right_distrib]
-      rw [PReal.eq_iff_toReal_eq]
       conv =>
         repeat rw [PReal.add_toReal]
         repeat rw [PReal.mul_toReal]
