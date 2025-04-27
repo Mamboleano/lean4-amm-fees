@@ -24,28 +24,33 @@ noncomputable def S₀.add (s: S₀) (a: A) (t: T) (x: ℝ≥0): S₀ :=
 
 @[simp] theorem S₀.get_add_self (s: S₀) (a: A) (t: T) (x: ℝ≥0):
   (s.add a t x).get a = (s.get a).add t x := by
-  simp [get, add]
+  delta get add
+  simp
 
 @[simp] theorem S₀.get_add_diffa (s: S₀) (a: A) (t: T) (x: ℝ≥0)
   (a': A) (hdif: a ≠ a'):
   (s.add a t x).get a' = s.get a' := by
-  simp [get, add, hdif.symm]
+  delta get add
+  simp [hdif.symm]
 
 noncomputable def S₀.sub (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t): S₀ :=
   ⟨s.map.update a ((s.map a).sub t x h)⟩
 
 @[simp] theorem S₀.get_sub_self (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t):
   (s.sub a t x h).get a = (s.get a).sub t x h := by
-  simp [get, sub]
+  delta get sub
+  simp
 
 @[simp] theorem S₀.get_sub_diffa (s: S₀) (a: A) (t: T) (x: ℝ≥0) (h: x ≤ s.get a t) (a': A) (hdif: a ≠ a'):
   (s.sub a t x h).get a' = s.get a' := by
-  simp [get, sub, hdif.symm]
+  delta get sub
+  simp
+  simp [hdif.symm]
 
 noncomputable def S₀.drainw (s: S₀) (a: A): S₀ :=
   ⟨Finsupp.erase a s.map⟩
 
-theorem S₀.supply (s: S₀) (t: T): ℝ≥0 :=
+def S₀.supply (s: S₀) (t: T): ℝ≥0 :=
   s.map.sum (λ _ w => w t)
 
 -- When adding balance to a wallet,

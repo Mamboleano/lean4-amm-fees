@@ -1,7 +1,4 @@
-import Mathlib.Data.Finsupp.Defs
-import Mathlib.Data.Real.NNReal
-import Mathlib.Data.Sym.Sym2
-import Mathlib.Algebra.BigOperators.Finsupp
+import Mathlib
 import HelpersLib.NNReal
 import HelpersLib.Prod
 import HelpersLib.PReal.Basic
@@ -209,7 +206,7 @@ theorem W₁.worth_destruct (w: W₁) (o: T → T → ℝ≥0) (t0 t1: T) (hdif:
         simp [a]
       simp only [Finsupp.mem_support_iff, Finsupp.uncurry_apply, ne_eq, not_not, Finsupp.support_erase,
         Finset.mem_erase, Prod.mk.injEq, h'.symm, h', and_self, not_false_eq_true, true_and, Prod.mk.eta, hp,
-        Finsupp.erase_ne, hp', Finsupp.coe_update, b, Function.update_noteq, a, NNReal.coe_eq]
+        Finsupp.erase_ne, hp', Finsupp.coe_update, b, Function.update_of_ne, a, NNReal.coe_inj]
       rw [Finsupp.uncurry_apply]
 
   rw [h _ _ _ hdif]

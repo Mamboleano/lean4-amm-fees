@@ -1,6 +1,14 @@
 import HelpersLib.Finsupp2
 import HelpersLib.NNReal
-import HelpersLib.PReal.Basic
-import HelpersLib.PReal.Order
-import HelpersLib.PReal.Subtraction
 import HelpersLib.Prod
+import HelpersLib.PReal.Basic
+import HelpersLib.PReal.Division
+import HelpersLib.PReal.Multiplication
+import HelpersLib.PReal.Negative
+import HelpersLib.PReal.Order
+import HelpersLib.PReal.Sqrt
+import HelpersLib.PReal.Subtraction
+import HelpersLib.Real.Division
+import HelpersLib.Real.Multiplication
+import HelpersLib.Real.Order
+import HelpersLib.Real.Subtraction

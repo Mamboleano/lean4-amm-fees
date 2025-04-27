@@ -23,8 +23,8 @@ def SX.constprod.reversible:
   rw [one_div, inv_div, add_comm]
 
 theorem SX.constprod.homogeneous:
-  homogeneous constprod := by
-  unfold homogeneous
+  SX.homogeneous SX.constprod := by
+  unfold SX.homogeneous
   intro a x r0 r1
   unfold constprod
   rw [← left_distrib, div_eq_mul_inv, inv_mul']
@@ -34,7 +34,7 @@ theorem SX.constprod.homogeneous:
 
 theorem SX.constprod.strictmono:
   strictmono constprod := by
-  unfold strictmono
+  unfold SX.strictmono
   intro x r0 r1 x' r0' r1'
   intro ⟨a,b,c⟩
   unfold constprod
@@ -60,7 +60,7 @@ theorem SX.constprod.strictmono:
     exact mul_le_mul' c h'
 
 theorem SX.constprod.additive: SX.additive SX.constprod := by
-  unfold additive
+  unfold SX.additive
   intro x y r0 r1 h
   have desimp: y*r1 = (y*r0*r1 + y*x*r1)/(r0+x) := by
     symm
@@ -95,7 +95,7 @@ theorem SX.constprod.additive: SX.additive SX.constprod := by
   rw [right_distrib]
   rw [mul_assoc (y*r0*r1) _ (r0 + (x + y))]
   rw [add_assoc]
-  rw [mul_left_inv, mul_one]
+  rw [inv_mul_cancel, mul_one]
   rw [left_distrib, left_distrib, right_distrib, right_distrib,
       left_distrib, left_distrib]
   rw [← add_assoc, ← add_assoc]
@@ -206,7 +206,7 @@ theorem SX.constprod.optimality_suff
 
     have sw3_rate_lt_exch: sw3.rate < o t0 / o t1 := by
       simp [Swap.rate, SX.constprod, ← h]
-    simp [(Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch]
+    simp only [add_lt_iff_neg_left, (Swap.swaprate_vs_exchrate_lt sw3 o hzero).mpr sw3_rate_lt_exch]
 
   . have le: x ≤ x₀ := not_lt.mp nle
     have lt: x < x₀ := hdif.symm.lt_of_le' le
@@ -220,7 +220,7 @@ theorem SX.constprod.optimality_suff
     rw [← Swap.rev_gain sw3 rev o]
 
     have sw3_invrate_lt: (sw3.inv rev).rate < o t1 / o t0 := by
-      rw [Swap.rate_of_inv_eq_inv_rate]
+      rw [Swap.rate_of_inv_eq_inv_rate sw3 rev]
       rw [inv_lt', inv_div]
       rw [← h]
       unfold Swap.rate
@@ -250,7 +250,7 @@ theorem SX.constprod.optimality_suff
       exact PReal.lt_add_right _ _
 
     have hzero': (sw3.apply.mints.get a).get t1 t0 = 0 := by
-      simp [hzero, W₁.get_reorder _ t1 t0]
+      simp only [Swap.mints, W₁.get_reorder _ t1 t0, hzero]
 
     have sw3_inv_gain_neg :=
       (Swap.swaprate_vs_exchrate_lt (sw3.inv rev) o hzero').mpr sw3_invrate_lt
@@ -324,7 +324,7 @@ theorem SX.constprod.arbitrage_solve
     simp [Swap.y, Swap.rate, constprod, h]
     simp_rw [PReal.sub_mul'] -- right distrib step
     simp_rw [div_eq_mul_inv]
-    simp_rw [mul_comm (s.amms.r1 t0 t1 sw.exi) _, ← mul_assoc _ _ (s.amms.r1 t0 t1 sw.exi), mul_right_inv, one_mul] -- simp x/x
+    simp_rw [mul_comm (s.amms.r1 t0 t1 sw.exi) _, ← mul_assoc _ _ (s.amms.r1 t0 t1 sw.exi), mul_inv_cancel, one_mul] -- simp x/x
     simp_rw [PReal.sub_sub'', add_comm (s.amms.r1 t0 t1 sw.exi) _, PReal.sub_of_add]
     rw [mul_comm, ← mul_assoc, mul_comm (s.amms.r0 t0 t1 sw.exi) _, ←mul_assoc, ←mul_inv, PReal.mul_self_sqrt _]
     simp_rw [mul_inv]; rw [inv_inv]

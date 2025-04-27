@@ -18,22 +18,26 @@ noncomputable def S₁.add (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ
 
 @[simp] theorem S₁.get_add_self (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ≥0):
   (s.add a t0 t1 hdif x).get a = (s.get a).add t0 t1 hdif x := by
-  simp [get, add]
+  delta get add
+  simp
 
 @[simp] theorem S₁.get_add_diff (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ≥0) (a': A) (hdiff: a ≠ a'):
   (s.add a t0 t1 hdif x).get a' = s.get a' := by
-  simp [get, add, hdiff.symm]
+  delta get add
+  simp [hdiff.symm]
 
 noncomputable def S₁.sub (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ≥0) (h: x ≤ (s.get a).bal t0 t1): S₁ :=
   ⟨s.map.update a ((s.map a).sub t0 t1 hdif x h)⟩
 
 @[simp] theorem S₁.get_sub_self (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ≥0) (h: x ≤ (s.get a).bal t0 t1):
   (s.sub a t0 t1 hdif x h).get a = (s.get a).sub t0 t1 hdif x h := by
-  simp [get, sub]
+  delta get sub
+  simp
 
 @[simp] theorem S₁.get_sub_diff (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1) (x: ℝ≥0) (h: x ≤ (s.get a).bal t0 t1) (a': A) (hdiff: a ≠ a'):
   (s.sub a t0 t1 hdif x h).get a' = s.get a' := by
-  simp [get, sub, hdiff.symm]
+  delta get sub
+  simp [hdiff.symm]
 
 noncomputable def S₁.drain (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1): S₁ :=
   ⟨s.map.update a ((s.map a).drain t0 t1 hdif)⟩
@@ -50,7 +54,7 @@ noncomputable def S₁.drain (s: S₁) (a: A) (t0 t1: T) (hdif: t0 ≠ t1): S₁
   unfold get
   simp [hdiff.symm]
 
-theorem S₁.supply (s: S₁) (t0 t1: T): ℝ≥0 :=
+def S₁.supply (s: S₁) (t0 t1: T): ℝ≥0 :=
   s.map.sum (λ _ w => w.get t0 t1)
 
 @[simp] theorem S₁.supply_of_empty (t0 t1: T): empty.supply t0 t1 = 0 := by

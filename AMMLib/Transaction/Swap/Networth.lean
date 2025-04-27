@@ -80,8 +80,8 @@ theorem Swap.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
 
   ring_nf
   . rw [Γ.mintedprice_reorder]
-  . exact sw.exi.dif
   . rw [Γ.mintedprice_reorder]
+  . exact sw.exi.dif
 
 theorem Swap.swaprate_vs_exchrate
   (sw: Swap sx s a t0 t1 x) (o: O)

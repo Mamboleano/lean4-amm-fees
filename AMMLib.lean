@@ -1,3 +1,8 @@
+import AMMLib.FeeVersion.Additivity
+import AMMLib.FeeVersion.Arbitrage
+import AMMLib.FeeVersion.Basic
+import AMMLib.FeeVersion.Constprod
+import AMMLib.FeeVersion.Maximal
 import AMMLib.State.AMMs
 import AMMLib.State.AMMsNN
 import AMMLib.State.AtomicWall
@@ -11,14 +16,10 @@ import AMMLib.State.Tokens
 import AMMLib.Transaction.Create
 import AMMLib.Transaction.Deposit
 import AMMLib.Transaction.Redeem
+import AMMLib.Transaction.Trace
 import AMMLib.Transaction.Swap.Additive
 import AMMLib.Transaction.Swap.Basic
 import AMMLib.Transaction.Swap.Constprod
 import AMMLib.Transaction.Swap.Networth
+import AMMLib.Transaction.Swap.Rate
 import AMMLib.Transaction.Swap.Reversible
-import AMMLib.Transaction.Trace
-import AMMLib.FeeVersion.Swap.Additivity
-import AMMLib.FeeVersion.Swap.Arbitrage
-import AMMLib.FeeVersion.Swap.Maximal
-import AMMLib.FeeVersion.Swap.Basic
-import AMMLib.FeeVersion.Swap.Constprod

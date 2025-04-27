@@ -1,1 +1,0 @@
-{"version":1,"references":{"c:mul_comm":{"usages":[[3,17,3,25]],"definition":null},"c:mul_assoc":{"usages":[[3,6,3,15],[3,32,3,41]],"definition":null},"c:Real.mul_mul_comm_last_second":{"usages":[],"definition":[2,8,2,37]},"c:Real":{"usages":[[2,47,2,48]],"definition":null}},"module":"HelpersLib.Real.Multiplication"}
