@@ -381,3 +381,27 @@ theorem SX.fee.constprod.x_max_gain
     . have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; simp [PReal.toReal_pos]
       have x_gt_x₀ : x > x₀ := lt_trans x₀_lt_x_max hx_gt
       exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ h_diff no_mints
+
+theorem SX.fee.constprod.x_max_unique
+  (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
+  (o : O)
+  (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
+  (no_mints : (s.mints.get a).get t0 t1 = 0)
+  (hφ : φ < 1)
+  (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ)):
+    ¬ ∃ (x₁ : ℝ>0) (h_enough : ↑x₁ ≤ (S₀.get s.atoms a) t0), x₁ ≠ (x_max φ sw0 o h_equil hφ) ∧
+      (∀ (x: ℝ>0) (sw2: Swap (SX.fee.constprod φ) s a t0 t1 x),
+        x ≠ x₁ → (s.mints.get a).get t0 t1 = 0 → a.gain o s sw2.apply <  a.gain o s (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough).apply) := by
+
+  intro h
+  obtain ⟨x₁, ⟨h_enough, ⟨h_diff, h_max_gain'⟩⟩⟩ := h
+  set sw1 := Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough
+
+  have h_max_gain := SX.fee.constprod.x_max_gain φ sw0 o h_equil hφ sw_max
+
+  rcases Decidable.em (x₁ ≠ (x_max φ sw0 o h_equil hφ)) with ne | eq
+  . have h_contr₁ := h_max_gain' (x_max φ sw0 o h_equil hφ) sw_max ne.symm no_mints
+    have h_contr₂ := h_max_gain x₁ sw1 ne no_mints
+    exact lt_asymm h_contr₁ h_contr₂
+
+  . aesop
