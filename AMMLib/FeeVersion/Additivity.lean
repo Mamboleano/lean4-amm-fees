@@ -186,7 +186,7 @@ theorem Swap.fee.additive_gain
     have hh : β = Swap.rate sw1 := by
         unfold rate
         rw [hβ]
-        rw [Swap.r0_after_swap φ, Swap.r1_after_swap φ]
+        rw [Swap.r0_after_swap _, Swap.r1_after_swap _]
 
     conv =>
       lhs;

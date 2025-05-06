@@ -15,7 +15,7 @@ def SX.reversible
     1 / (sx x r0 r1)
 
 def Swap.inv (sw: Swap sx s a t0 t1 v0)
-  (hrev: SX.reversible sx hbound)
+  (_: SX.reversible sx hbound)
   : Swap sx sw.apply a t1 t0 sw.y
   :=
   ⟨

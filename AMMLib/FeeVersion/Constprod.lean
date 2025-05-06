@@ -150,7 +150,7 @@ theorem SX.fee.constprod.beta_simp_rate
     conv =>
       lhs
       unfold Swap.rate
-      rw [Swap.r0_after_swap φ sw0, Swap.r1_after_swap φ sw0]
+      rw [Swap.r0_after_swap sw0, Swap.r1_after_swap sw0]
       rw [beta_simp]
     set_and_subst_reserves s.amms t0 t1 sw0.exi
     rw [mul_div]
@@ -267,7 +267,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
         SX.fee.constprod.int_rate φ (sw.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw)) (sw.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw)) := by
 
     unfold constprod int_rate
-    rw [Swap.r0_after_swap φ, Swap.r1_after_swap φ]
+    rw [Swap.r0_after_swap _, Swap.r1_after_swap _]
 
     set_and_subst_reserves s.amms t0 t1 sw.exi
 
@@ -325,20 +325,20 @@ theorem SX.fee.constprod.r1_lt_split_after_swap
        := by
 
       /- Setup for variables -/
-      rw [Swap.r1_after_swap φ sw0, Swap.r1_after_swap φ sw2]
+      rw [Swap.r1_after_swap sw0, Swap.r1_after_swap sw2]
       repeat conv in AMMs.r1 (Swap.apply sw1).amms t0 t1 (_ : AMMs.init (Swap.apply sw1).amms t0 t1) =>
-          rw [Swap.r1_after_swap φ sw1]
+          rw [Swap.r1_after_swap sw1]
 
       repeat conv in (AMMs.r0 (Swap.apply sw1).amms t0 t1 (_ : AMMs.init (Swap.apply sw1).amms t0 t1)) =>
-        rw [Swap.r0_after_swap φ]
+        rw [Swap.r0_after_swap]
 
       set_and_subst_reserves s.amms t0 t1 sw0.exi
 
       have h_lt' : x₁ * (SX.fee.constprod φ) x₁ r0 r1 + x₂ * (SX.fee.constprod φ) x₂ (r0 + x₁) (PReal.sub r1 (x₁ * (SX.fee.constprod φ) x₁ r0 r1) (by exact sw1.nodrain)) < r1 := by
         rw [PReal.add_lt_iff _ _ _ (sw1.nodrain)]
         -- simp [←Swap.r0_after_swap, ←Swap.r1_after_swap]
-        rw [←Swap.r0_after_swap φ sw1]
-        rw [←Swap.r1_after_swap φ sw1]
+        rw [←Swap.r0_after_swap sw1]
+        rw [←Swap.r1_after_swap sw1]
         exact sw2.nodrain
 
       rw [← PReal.sub_sub' _ _ _ h_lt']
@@ -402,7 +402,7 @@ theorem SX.fee.constprod.int_rate_lt_split
 
   have h_r0 : (AMMs.r0 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2)) =
                 (AMMs.r0 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0)) := by
-                rw [Swap.r0_after_swap φ sw2, Swap.r0_after_swap  φ sw1, Swap.r0_after_swap  φ sw0]
+                rw [Swap.r0_after_swap sw2, Swap.r0_after_swap sw1, Swap.r0_after_swap sw0]
                 rw [add_assoc]
                 conv in x₁ + x₂ =>
                   rw [←h_split]

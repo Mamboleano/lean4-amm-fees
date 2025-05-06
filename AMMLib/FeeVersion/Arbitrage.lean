@@ -262,7 +262,7 @@ theorem SX.fee.arbitrage.int_rate_simp
     (↑φ * ↑(AMMs.r0 s.amms t0 t1 sw0.exi) * ↑(AMMs.r1 s.amms t0 t1 sw0.exi)) /
       ((↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑x₀) * (↑(AMMs.r0 s.amms t0 t1 sw0.exi) + ↑φ*↑x₀)) := by
 
-      rw [Swap.r0_after_swap φ, Swap.r1_after_swap φ]
+      rw [Swap.r0_after_swap _, Swap.r1_after_swap _]
       unfold constprod.int_rate constprod
       set_and_subst_reserves s.amms t0 t1 sw0.exi
       rw [SX.fee.φ_r1_sub_α_x_simp _ _ _ _]
@@ -475,7 +475,7 @@ theorem SX.fee.arbitrage.constprod.equil_value
     set n_4 : ℝ>0 := (⟨4, by norm_num⟩ : ℝ>0) with h4
     set φ_sub_1_sq : ℝ>0 := (⟨((↑φ : ℝ) - 1)^2 ,PReal.neg_sub_ne_zero_pos hφ⟩ : ℝ>0) with hφ_sub_1
 
-    rw [Swap.r0_after_swap φ sw0, Swap.r1_after_swap φ sw0]
+    rw [Swap.r0_after_swap sw0, Swap.r1_after_swap sw0]
     rw [PReal.eq_iff_toReal_eq]
 
     unfold constprod.int_rate constprod
@@ -643,7 +643,7 @@ theorem SX.fee.arbitrage.constprod.solution_equil_unique
       rw [h_equil, h_equil']
 
     unfold constprod.int_rate at int_rates_eq
-    rw [Swap.r0_after_swap φ sw0, Swap.r0_after_swap φ _ , Swap.r1_after_swap φ _, Swap.r1_after_swap φ _] at int_rates_eq
+    rw [Swap.r0_after_swap sw0, Swap.r0_after_swap _ , Swap.r1_after_swap _, Swap.r1_after_swap _] at int_rates_eq
     unfold constprod at int_rates_eq
 
     conv at int_rates_eq =>

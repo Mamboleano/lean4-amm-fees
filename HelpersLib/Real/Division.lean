@@ -28,8 +28,8 @@ theorem mul_div_cancel_den {a b c : ℝ} (ha : a ≠ 0): a * (b / (a * c)) = b /
 
 theorem div_gt_self {a b : ℝ} (ha : a > 0) (hb : b > 0) (hb' : b < 1): a / b > a := by
   ring_nf!
-  aesop
-  rw [one_lt_inv_iff]
+  simp_all only [gt_iff_lt, lt_mul_iff_one_lt_right]
+  rw [one_lt_inv_iff₀]
   exact ⟨hb, hb'⟩
 
 theorem mul_eq_iff_eq_div {a b c : ℝ} (ha : a ≠ 0) :

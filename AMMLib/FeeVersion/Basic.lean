@@ -166,7 +166,7 @@ theorem Swap.fee.self_gain_no_mint_eq (sw: Swap sx s a t0 t1 x) (no_mint: (s.min
     simp [no_mint]
 
 
-theorem SX.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
+theorem SX.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (_ : O) (h_dif : a ≠ b):
   (s.atoms.get b)
   =
   (sw.apply).atoms.get b
@@ -184,13 +184,13 @@ theorem SX.fee.swap_apply_amm_exi (sw: Swap sx s a t0 t1 x):
     exact sw.exi
 
 theorem Swap.r0_after_swap (sw: Swap sx s a t0 t1 x):
-  (AMMs.r0 (apply sw).amms t0 t1 (by aesop; exact sw.exi)) =
+  (AMMs.r0 (apply sw).amms t0 t1 (SX.fee.swap_apply_amm_exi _)) =
     (AMMs.r0 s.amms t0 t1 (sw.exi)) + x := by
     simp
     rw [add_comm]
 
 theorem Swap.r1_after_swap (sw: Swap sx s a t0 t1 x) :
-    (AMMs.r1 (apply sw).amms t0 t1 (by aesop; exact sw.exi)) =
+    (AMMs.r1 (apply sw).amms t0 t1 (SX.fee.swap_apply_amm_exi _)) =
       (AMMs.r1 s.amms t0 t1 (sw.exi)).sub  (x * (sx x (AMMs.r0 s.amms t0 t1 (sw.exi)) (AMMs.r1 s.amms t0 t1 (sw.exi)))) (sw.nodrain):= by
     simp [y, rate]
 

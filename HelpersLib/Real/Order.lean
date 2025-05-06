@@ -2,10 +2,13 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Real.Sqrt
 
 theorem div_neg_iff_neg (a b : ℝ) (h : 0 < b) : a / b < 0 ↔ a < 0 := by
-  aesop
-  . rw [div_lt_iff h, zero_mul] at a_1
+  apply Iff.intro
+  · intro a_1
+    rw [div_lt_iff₀ h, zero_mul] at a_1
     exact a_1
-  . rw [div_lt_iff h, zero_mul]
+
+  · intro a_1
+    rw [div_lt_iff₀ h, zero_mul]
     exact a_1
 
 theorem mul_lt_mul_iff_div_lt_div {a b c d : ℝ} (ha : a > 0) (hc : c > 0) :
@@ -13,13 +16,13 @@ theorem mul_lt_mul_iff_div_lt_div {a b c d : ℝ} (ha : a > 0) (hc : c > 0) :
     conv =>
       lhs
       rw [mul_comm]
-      rw [←lt_div_iff ha, ←mul_div]
-      rw [←div_lt_iff' hc]
+      rw [←lt_div_iff₀ ha, ←mul_div]
+      rw [←div_lt_iff₀' hc]
 
 lemma mul_lt_iff_lt_div (a b c : ℝ) (hb : 0 < b) : a * b < c ↔ a < c / b := by
   conv =>
     lhs
-    rw [←lt_div_iff hb]
+    rw [←lt_div_iff₀ hb]
 
 lemma sqrt_mul_lt_sqrt {a b c : ℝ} (ha : 0 < a) (hb : 0 < b) : (Real.sqrt a) * b < (Real.sqrt c) ↔ a * b^2 < c := by
 

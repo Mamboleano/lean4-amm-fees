@@ -106,16 +106,16 @@ def Swap.bound_split2
   (addi: SX.additive sx):
   (Swap.additive sw0 sw1 addi).y = sw0.y + sw1.y := by
     unfold SX.additive at addi
-    simp [y, right_distrib, rate]
+    simp only [y, rate, right_distrib, amms, AMMs.r0_of_add_r0, AMMs.r0_of_sub_r1,
+      AMMs.r1_of_add_r0, AMMs.r1_of_sub_r1]
     rw [addi _ _ _ _ sw0.nodrain]
     simp_rw [← y_norm sw0]
-    simp
     simp_rw [add_comm _ x₀]
     rw [div_eq_mul_inv]
     rw [← mul_assoc, ← mul_assoc]
     rw [← right_distrib, ← right_distrib]
     rw [mul_comm, ← mul_assoc]
-    sorry
+    simp only [inv_mul_cancel, one_mul]
 
 @[simp] theorem Swap.additive_y'
   (sw0: Swap sx s a t0 t1 x₀)
