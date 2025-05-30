@@ -91,7 +91,7 @@ theorem Swap.constprod.mkSwap (s: Γ) (a: A) (t0 t1: T) (x: ℝ>0) (h_init : s.a
 
   ⟩
 
-theorem SX.fee.φ_r1_sub_α_x_simp :
+theorem SX.fee.constprod.φ_r1_sub_α_x_simp :
   ∀ (x r0 r1 : ℝ>0) (h: x * (φ * r1 / (r0 + φ * x)) < r1),
     φ * PReal.sub r1 (x * (φ * r1 / (r0 + φ * x))) h = φ * r0 * r1 / (r0 + φ * x) := by
     intro x r0 r1 h
@@ -137,7 +137,7 @@ theorem SX.fee.constprod.beta_simp:
     intro x y r0 r1 h
 
     unfold SX.fee.constprod
-    rw [SX.fee.φ_r1_sub_α_x_simp _ _ _ _]
+    rw [SX.fee.constprod.φ_r1_sub_α_x_simp _ _ _ _]
     rw [div_div]
     rw [mul_assoc, mul_comm r0, ←mul_assoc]
 
@@ -217,7 +217,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
     λ (r0 r1: ℝ>0) => (φ * r1)/(r0)
 
   noncomputable def SX.fee.constprod.sw_to_equil (sw0 : Swap (SX.fee.constprod φ) s a t0 t1 x₀) (o : O): Prop :=
-    SX.fee.constprod.int_rate φ (sw0.apply.amms.r0 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (SX.fee.swap_apply_amm_exi sw0)) =
+    SX.fee.constprod.int_rate φ (sw0.apply.amms.r0 t0 t1 (Swap.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (Swap.fee.swap_apply_amm_exi sw0)) =
       o t0 / o t1
 
 
@@ -264,7 +264,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
 
   theorem SX.fee.constprod.sx_rate_gt_int_rate_post_swap (sw: Swap (SX.fee.constprod φ) s a t0 t1 x) (hφ: φ ≤ 1) :
       sw.rate >
-        SX.fee.constprod.int_rate φ (sw.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw)) (sw.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw)) := by
+        SX.fee.constprod.int_rate φ (sw.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw)) (sw.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw)) := by
 
     unfold constprod int_rate
     rw [Swap.r0_after_swap _, Swap.r1_after_swap _]
@@ -302,7 +302,7 @@ theorem SX.fee.constprod.extended_additivity: SX.fee.extended_additivity φ (SX.
 
 theorem SX.fee.constprod.sx_rate_vs_int_rate (sw: Swap (SX.fee.constprod φ) s a t0 t1 x) (hφ: φ ≤ 1) :
     SX.fee.constprod φ x (s.amms.r0 t0 t1 sw.exi) (s.amms.r1 t0 t1 sw.exi) >
-      SX.fee.constprod.int_rate φ (sw.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw)) (sw.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw))
+      SX.fee.constprod.int_rate φ (sw.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw)) (sw.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw))
       ∧
     SX.fee.constprod φ x (s.amms.r0 t0 t1 sw.exi) (s.amms.r1 t0 t1 sw.exi) <
       SX.fee.constprod.int_rate φ (s.amms.r0 t0 t1 sw.exi) (s.amms.r1 t0 t1 sw.exi) := by
@@ -320,8 +320,8 @@ theorem SX.fee.constprod.r1_lt_split_after_swap
   (sw2 : Swap (SX.fee.constprod φ) (sw1.apply) a t0 t1 x₂)
   (hφ : φ < 1)
   (h_split : x₀ = x₁ + x₂) :
-    AMMs.r1 (Swap.apply sw0).amms t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0) <
-      AMMs.r1 (Swap.apply sw2).amms t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)
+    AMMs.r1 (Swap.apply sw0).amms t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0) <
+      AMMs.r1 (Swap.apply sw2).amms t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)
        := by
 
       /- Setup for variables -/
@@ -390,33 +390,33 @@ theorem SX.fee.constprod.int_rate_lt_split
   (sw2 : Swap (SX.fee.constprod φ) (sw1.apply) a t0 t1 x₂)
   (hφ : φ < 1)
   (h_split : x₀ = x₁ + x₂) :
-    int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) >
-          int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0)) := by
+    int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) >
+          int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0)) := by
 
   have h_r1 :  (AMMs.r1 (Swap.apply sw0).amms t0 t1 (_ : AMMs.init (Swap.apply sw0).amms t0 t1)) <
                 (AMMs.r1 (Swap.apply sw2).amms t0 t1 (_ : AMMs.init (Swap.apply sw2).amms t0 t1)) :=
                   SX.fee.constprod.r1_lt_split_after_swap φ sw0 sw1 sw2 hφ h_split
-  have h_r1' : (AMMs.r1 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0)) ≤
-                (AMMs.r1 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2)) :=
+  have h_r1' : (AMMs.r1 (Swap.apply sw0).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw0)) ≤
+                (AMMs.r1 (Swap.apply sw2).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw2)) :=
                   by simp only [le_iff_lt_or_eq, h_r1, true_or]
 
-  have h_r0 : (AMMs.r0 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2)) =
-                (AMMs.r0 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0)) := by
+  have h_r0 : (AMMs.r0 (Swap.apply sw2).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw2)) =
+                (AMMs.r0 (Swap.apply sw0).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw0)) := by
                 rw [Swap.r0_after_swap sw2, Swap.r0_after_swap sw1, Swap.r0_after_swap sw0]
                 rw [add_assoc]
                 conv in x₁ + x₂ =>
                   rw [←h_split]
-  have h_r0' : (AMMs.r0 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2)) ≤
-                (AMMs.r0 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0)) := by
+  have h_r0' : (AMMs.r0 (Swap.apply sw2).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw2)) ≤
+                (AMMs.r0 (Swap.apply sw0).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw0)) := by
                   simp only [le_iff_lt_or_eq, h_r0, or_true]
 
   have hmono := SX.fee.constprod.int_rate_is_strictmono
   unfold int_rate_strictmono at hmono
   have hh := hmono φ
-              (AMMs.r0 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0))
-              (AMMs.r1 (Swap.apply sw0).amms t0 t1 (SX.fee.swap_apply_amm_exi sw0))
-              (AMMs.r0 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2))
-              (AMMs.r1 (Swap.apply sw2).amms t0 t1 (SX.fee.swap_apply_amm_exi sw2))
+              (AMMs.r0 (Swap.apply sw0).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw0))
+              (AMMs.r1 (Swap.apply sw0).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw0))
+              (AMMs.r0 (Swap.apply sw2).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw2))
+              (AMMs.r1 (Swap.apply sw2).amms t0 t1 (Swap.fee.swap_apply_amm_exi sw2))
               ⟨h_r0', h_r1'⟩
 
   simp only  [h_r1, or_true, if_true] at hh
@@ -430,14 +430,14 @@ theorem SX.fee.constprod.additive_int_rate_vs_ext_rate
   (sw2 : Swap (SX.fee.constprod φ) (sw1.apply) a t0 t1 x₂)
   (o : O)
   (hφ : φ < 1)
-  (h_equil : int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0))
+  (h_equil : int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0))
      = (o t0) / (o t1))
   (h_split : x₀ = x₁ + x₂) :
-    (o t0) / (o t1) < int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) := by
+    (o t0) / (o t1) < int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) := by
 
 
-  have h_lt : int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw2)) >
-        int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact SX.fee.swap_apply_amm_exi sw0))
+  have h_lt : int_rate φ (sw2.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) (sw2.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw2)) >
+        int_rate φ (sw0.apply.amms.r0 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0)) (sw0.apply.amms.r1 t0 t1 (by exact Swap.fee.swap_apply_amm_exi sw0))
            := SX.fee.constprod.int_rate_lt_split φ sw0 sw1 sw2 hφ h_split
 
   rw [h_equil] at h_lt

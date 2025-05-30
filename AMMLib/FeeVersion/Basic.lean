@@ -127,12 +127,12 @@ elab "subst_reserves" amms:ident t0:ident t1:ident : tactic =>
 
 open NNReal
 
-theorem SX.fee.valid_sw_y_lt_r1 (sw: Swap sx s a t0 t1 x) :
+theorem Swap.fee.valid_sw_y_lt_r1 (sw: Swap sx s a t0 t1 x) :
   (sw.y: ℝ≥0) ≤ ((s.amms.r1 t0 t1 sw.exi): ℝ≥0) := by
     rw [(PReal.toNNReal_le_toNNReal_iff _ _).symm]
     simp [Swap.y, Swap.rate, le_of_lt sw.nodrain]
 
-theorem SwapFee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
+theorem Swap.fee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
   (a.gain o s sw.apply)
   =
   (sw.y*(o t1) - x*(o t0))
@@ -152,7 +152,7 @@ theorem SwapFee.self_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) :
   rw [W₁.worth_destruct _ (s.mintedprice o) t0 t1 _]
 
   simp [expandprice, sw.exi, sw.exi.dif, sw.exi.dif.symm,
-        sw.enough, NNReal.coe_sub (SX.fee.valid_sw_y_lt_r1 sw), le_of_lt sw.y_lt_r1₀]
+        sw.enough, NNReal.coe_sub (Swap.fee.valid_sw_y_lt_r1 sw), le_of_lt sw.y_lt_r1₀]
 
   ring_nf
   . rw [Γ.mintedprice_reorder]
@@ -166,7 +166,7 @@ theorem Swap.fee.self_gain_no_mint_eq (sw: Swap sx s a t0 t1 x) (no_mint: (s.min
     simp [no_mint]
 
 
-theorem SX.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (_ : O) (h_dif : a ≠ b):
+theorem Swap.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (_ : O) (h_dif : a ≠ b):
   (s.atoms.get b)
   =
   (sw.apply).atoms.get b
@@ -177,25 +177,25 @@ theorem SX.fee.same_wall_diff_act (sw: Swap sx s a t0 t1 x) (_ : O) (h_dif : a �
   . exact h_dif
   . exact h_dif
 
-theorem SX.fee.swap_apply_amm_exi (sw: Swap sx s a t0 t1 x):
+theorem Swap.fee.swap_apply_amm_exi (sw: Swap sx s a t0 t1 x):
   AMMs.init (sw.apply).amms t0 t1 := by
     unfold Swap.apply
     simp_all
     exact sw.exi
 
 theorem Swap.r0_after_swap (sw: Swap sx s a t0 t1 x):
-  (AMMs.r0 (apply sw).amms t0 t1 (SX.fee.swap_apply_amm_exi _)) =
+  (AMMs.r0 (apply sw).amms t0 t1 (Swap.fee.swap_apply_amm_exi _)) =
     (AMMs.r0 s.amms t0 t1 (sw.exi)) + x := by
     simp
     rw [add_comm]
 
 theorem Swap.r1_after_swap (sw: Swap sx s a t0 t1 x) :
-    (AMMs.r1 (apply sw).amms t0 t1 (SX.fee.swap_apply_amm_exi _)) =
+    (AMMs.r1 (apply sw).amms t0 t1 (Swap.fee.swap_apply_amm_exi _)) =
       (AMMs.r1 s.amms t0 t1 (sw.exi)).sub  (x * (sx x (AMMs.r0 s.amms t0 t1 (sw.exi)) (AMMs.r1 s.amms t0 t1 (sw.exi)))) (sw.nodrain):= by
     simp [y, rate]
 
 
-theorem SwapFee.ext_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
+theorem Swap.ext_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
   (b.gain o s sw.apply)
   =
   ((s.mints.get b).get t0 t1) * (x * (o t0) - sw.y * (o t1))
@@ -210,28 +210,59 @@ theorem SwapFee.ext_gain_eq (sw: Swap sx s a t0 t1 x) (o: O) (h_dif : a ≠ b):
   rw [W₀.worth_destruct (s.atoms.get b) o t0]
   rw [W₀.worth_destruct ((s.atoms.get b).drain t0) o t1]
 
-  rw [SX.fee.same_wall_diff_act sw o]
+  rw [Swap.fee.same_wall_diff_act sw o]
   simp
   . rw [W₁.worth_destruct _ (sw.apply.mintedprice o) t0 t1 sw.exi.dif]
     rw [W₁.worth_destruct _ (s.mintedprice o) t0 t1 sw.exi.dif]
     simp
-    have s'_exi : AMMs.init (sw.apply).amms t0 t1 := by exact SX.fee.swap_apply_amm_exi sw
+    have s'_exi : AMMs.init (sw.apply).amms t0 t1 := by exact Swap.fee.swap_apply_amm_exi sw
     rw [expandprice sw.apply o t0 t1 s'_exi]
     rw [expandprice s o t0 t1 sw.exi]
     simp
-    have h' : ↑(Swap.y sw) ≤ AMMs.r1₀ s.amms t0 t1 :=  by exact SX.fee.valid_sw_y_lt_r1 sw
+    have h' : ↑(Swap.y sw) ≤ AMMs.r1₀ s.amms t0 t1 :=  by exact Swap.fee.valid_sw_y_lt_r1 sw
     rw [NNReal.coe_sub h']
     ring_nf!
     all_goals simp [Γ.mintedprice_reorder]
 
   . exact h_dif
 
-theorem SX.fee.swaprate_vs_exchrate
+theorem Swap.fee.frac_gain_pos
+  (s : Γ)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1) :
+    (1 - ↑((s.mints.get a).get t0 t1 : ℝ) / ↑(s.mints.supply t0 t1 : ℝ)) > 0 := by
+      simp_all
+      rw [div_lt_one]
+      aesop
+      aesop
+
+noncomputable def Swap.fee.frac_gain_Rpos
+  (s : Γ)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1): ℝ>0 :=
+  ⟨(1 - ↑((s.mints.get a).get t0 t1 : ℝ) / ↑(s.mints.supply t0 t1 : ℝ)), frac_gain_pos s h_supply h_mint⟩
+
+theorem Swap.fee.frac_gain_Rpos_toReal
+  (s : Γ)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1) :
+    ↑(Swap.fee.frac_gain_Rpos s h_supply h_mint) =
+      ((1 : ℝ) - ↑((s.mints.get a).get t0 t1 : ℝ) / ↑(s.mints.supply t0 t1 : ℝ)) := by
+      unfold frac_gain_Rpos
+      simp
+
+theorem Swap.fee.swaprate_vs_exchrate
   (sw: Swap sx s a t0 t1 x) (o: O)
-  (hzero: (s.mints.get a).get t0 t1 = 0):
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
   cmp (a.gain o s sw.apply) 0 = cmp sw.rate ((o t0) / (o t1)) := by
 
-  simp [Swap.self_gain_eq, hzero, Swap.y]
+  simp [Swap.self_gain_eq, Swap.y]
+  conv =>
+    lhs
+    rw [← zero_mul]
+    rw [cmp_mul_pos_right (frac_gain_pos s h_supply h_mint)]
+  simp
   rw [mul_assoc]
   rw [cmp_mul_pos_left x.toReal_pos (sw.rate*(o t1)) (o t0)]
   rw [div_eq_mul_inv (o t0 : ℝ) (o t1)]
@@ -240,22 +271,24 @@ theorem SX.fee.swaprate_vs_exchrate
           (sw.rate*(o t1)) (o t0)]
   rw [mul_inv_cancel_right₀ (o t1).toReal_ne_zero sw.rate]
 
-theorem SX.fee.swaprate_vs_exchrate_lt
+theorem Swap.fee.swaprate_vs_exchrate_lt
 (sw: Swap sx s a t0 t1 v0) (o: O)
-(hzero: (s.mints.get a).get t0 t1 = 0):
+(h_supply: s.mints.supply t0 t1 > 0)
+(h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
 (a.gain o s sw.apply) < 0
 ↔
 sw.rate <  (o t0) / (o t1)
 := by
   rw [← cmp_eq_lt_iff, ← cmp_eq_lt_iff]
-  rw [Swap.swaprate_vs_exchrate sw o hzero]
+  rw [swaprate_vs_exchrate sw o h_supply h_mint]
 
-theorem SX.fee.swaprate_vs_exchrate_gt
+theorem Swap.fee.swaprate_vs_exchrate_gt
 (sw: Swap sx s a t0 t1 v0) (o: O)
-(hzero: (s.mints.get a).get t0 t1 = 0):
+(h_supply: s.mints.supply t0 t1 > 0)
+(h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
 0 < (a.gain o s sw.apply)
 ↔
 (o t0) / (o t1) < sw.rate
 := by
   rw [← cmp_eq_gt_iff, ← cmp_eq_gt_iff]
-  rw [Swap.swaprate_vs_exchrate sw o hzero]
+  rw [swaprate_vs_exchrate sw o h_supply h_mint]

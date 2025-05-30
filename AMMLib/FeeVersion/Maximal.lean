@@ -155,7 +155,8 @@ theorem SX.fee.constprod.gain_xmax_gt_x₀
   (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
   (hφ : φ < 1)
   (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ))
-  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
+  (h_supply : s.mints.supply t0 t1 > 0)
+  (h_mints : (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
     A.gain a o s (Swap.apply sw0) < A.gain a o s (Swap.apply sw_max) := by
 
     have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by
@@ -172,11 +173,11 @@ theorem SX.fee.constprod.gain_xmax_gt_x₀
     have sw_max': Swap (SX.fee.constprod φ) (sw0.apply) a t0 t1 x₁ :=
       sw_max_split.bound_split2 bound
 
-    rw [Swap.fee.additive_gain φ sw0 sw_max' sw_max_split additive bound no_mints hφ o]
+    rw [SX.fee.additive_gain φ sw0 sw_max' sw_max_split additive bound h_supply h_mints hφ o]
     rw [add_assoc, lt_add_iff_pos_right]
 
-    have gain_ε_pos : A.gain a o (Swap.apply sw0) (Swap.apply sw_max') + ↑(Swap.fee.εφ φ sw0 sw_max' hφ o) > 0 ↔ (x_max φ sw0 o h_equil hφ) < x₀/φ := by
-      exact SX.fee.arbitrage.add_gain_εφ_pos φ sw0 sw_max sw_max' no_mints addi o h_equil
+    have gain_ε_pos : A.gain a o (Swap.apply sw0) (Swap.apply sw_max') + ↑(SX.fee.εφ φ sw0 sw_max' hφ o h_supply h_mints) > 0 ↔ (x_max φ sw0 o h_equil hφ) < x₀/φ := by
+      exact SX.fee.arbitrage.add_gain_εφ_pos φ sw0 sw_max sw_max' addi o h_equil
 
     apply gain_ε_pos.mpr
     exact x_max_lt_x₀_div_φ _ _ _ _ _
@@ -191,7 +192,8 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
   (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ))
   (x_gt_x₀ : x > x₀)
   (x_diff_x_max : x ≠ (x_max φ sw0 o h_equil hφ))
-  (no_mints : W₁.get (S₁.get s.mints a) t0 t1 = 0):
+  (h_supply : s.mints.supply t0 t1 > 0)
+  (h_mints : (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
     A.gain a o s (Swap.apply sw2) < A.gain a o s (Swap.apply sw_max) := by
 
     have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; simp [PReal.toReal_pos]
@@ -207,7 +209,7 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
     have sw_max': Swap (SX.fee.constprod φ) (sw0.apply) a t0 t1 x_max' :=
       sw_max_split.bound_split2 bound
 
-    rw [Swap.fee.additive_gain φ sw0 sw_max' sw_max_split additive bound no_mints hφ o]
+    rw [SX.fee.additive_gain φ sw0 sw_max' sw_max_split additive bound h_supply h_mints hφ o]
 
     -- Rewrite Gain(x) as the sum
     have ⟨x₁, x_split⟩ := PReal.lt_iff_exists_add x_gt_x₀
@@ -218,7 +220,7 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
     have sw2': Swap (SX.fee.constprod φ) (sw0.apply) a t0 t1 x₁ :=
       sw2_split.bound_split2 bound
 
-    rw [Swap.fee.additive_gain φ sw0 sw2' sw2_split additive bound no_mints hφ o]
+    rw [SX.fee.additive_gain φ sw0 sw2' sw2_split additive bound h_supply h_mints hφ o]
 
     -- Split values are different
     have x₁_diff_x_max' : x₁ ≠ x_max' := by aesop
@@ -228,12 +230,11 @@ theorem SX.fee.constprod.x_max_gain_gt_x_gt_equil
     apply add_lt_add_left
 
     -- Rewriting the gain ε sum
-    unfold Swap.fee.εφ
-    have no_mints' : W₁.get (S₁.get sw0.apply.mints a) t0 t1 = 0 := by
-      rw [Swap.mints sw0]
-      exact no_mints
-    rw [Swap.fee.self_gain_no_mint_eq _ no_mints', Swap.fee.self_gain_no_mint_eq _ no_mints']
+    unfold SX.fee.εφ
     simp only [PReal.mul_toReal, PReal.sub_toReal, PReal.add_toReal, gt_iff_lt]
+    rw [Swap.self_gain_eq, Swap.self_gain_eq, Swap.fee.frac_gain_Rpos_toReal s h_supply h_mints]
+    rw [Swap.mints sw0, ←right_distrib, ←right_distrib, ←Swap.fee.frac_gain_Rpos_toReal s h_supply h_mints]
+    rw [mul_lt_mul_right (PReal.toReal_pos _)]
     unfold Swap.y
     set_and_subst_reserves s.amms t0 t1 sw0.exi
     conv =>
@@ -355,10 +356,10 @@ theorem SX.fee.constprod.x_max_gain
   (hφ : φ < 1)
   (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ)):
   ∀ (x: ℝ>0) (sw2: Swap (SX.fee.constprod φ) s a t0 t1 x),
-    x ≠ (x_max φ sw0 o h_equil hφ) → (s.mints.get a).get t0 t1 = 0 → a.gain o s sw2.apply <  a.gain o s sw_max.apply := by
+    x ≠ (x_max φ sw0 o h_equil hφ) → s.mints.supply t0 t1 > 0 → (s.mints.get a).get t0 t1 < s.mints.supply t0 t1 → a.gain o s sw2.apply <  a.gain o s sw_max.apply := by
 
-    intros x sw2 h_diff no_mints
-    have gain_x₀_lt_x_max: A.gain a o s (Swap.apply sw0) < A.gain a o s (Swap.apply sw_max) := SX.fee.constprod.gain_xmax_gt_x₀ φ sw0 o h_equil hφ sw_max no_mints
+    intros x sw2 h_diff h_supply h_mints
+    have gain_x₀_lt_x_max: A.gain a o s (Swap.apply sw0) < A.gain a o s (Swap.apply sw_max) := SX.fee.constprod.gain_xmax_gt_x₀ φ sw0 o h_equil hφ sw_max h_supply h_mints
 
     rcases lt_or_gt_of_ne h_diff with _|hx_gt
     -- Case x < x_max
@@ -366,13 +367,13 @@ theorem SX.fee.constprod.x_max_gain
       -- Case x < x₀
       . have hsol := SX.fee.arbitrage.constprod.solution_less φ sw0 o hφ h_equil
         unfold arbitrage.is_solution_less at hsol
-        have gain_x_lt_x₀ := hsol x sw2 le no_mints
+        have gain_x_lt_x₀ := hsol x sw2 le h_supply h_mints
         exact lt_trans gain_x_lt_x₀ gain_x₀_lt_x_max
       -- Case x ≥ x₀
       . simp only [not_lt] at nle
         rcases lt_or_eq_of_le nle with lt_x₀_x|eq_x₀_x
         -- Case x > x₀
-        . exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max lt_x₀_x h_diff no_mints
+        . exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max lt_x₀_x h_diff h_supply h_mints
         -- Case x = x₀
         . rw [Swap.apply_same_val sw2 sw0 eq_x₀_x.symm]
           exact gain_x₀_lt_x_max
@@ -380,18 +381,19 @@ theorem SX.fee.constprod.x_max_gain
     -- Case x > x_max
     . have x₀_lt_x_max : x₀ < (x_max φ sw0 o h_equil hφ) := by unfold x_max; simp [PReal.toReal_pos]
       have x_gt_x₀ : x > x₀ := lt_trans x₀_lt_x_max hx_gt
-      exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ h_diff no_mints
+      exact SX.fee.constprod.x_max_gain_gt_x_gt_equil φ sw0 sw2 o h_equil hφ sw_max x_gt_x₀ h_diff h_supply h_mints
 
 theorem SX.fee.constprod.x_max_unique
   (sw0: Swap (SX.fee.constprod φ) s a t0 t1 x₀)
   (o : O)
   (h_equil: SX.fee.constprod.sw_to_equil φ sw0 o)
-  (no_mints : (s.mints.get a).get t0 t1 = 0)
+  (h_supply : s.mints.supply t0 t1 > 0)
+  (h_mints : (s.mints.get a).get t0 t1 < s.mints.supply t0 t1)
   (hφ : φ < 1)
   (sw_max : Swap (SX.fee.constprod φ) s a t0 t1 (x_max φ sw0 o h_equil hφ)):
     ¬ ∃ (x₁ : ℝ>0) (h_enough : ↑x₁ ≤ (S₀.get s.atoms a) t0), x₁ ≠ (x_max φ sw0 o h_equil hφ) ∧
       (∀ (x: ℝ>0) (sw2: Swap (SX.fee.constprod φ) s a t0 t1 x),
-        x ≠ x₁ → (s.mints.get a).get t0 t1 = 0 → a.gain o s sw2.apply <  a.gain o s (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough).apply) := by
+        x ≠ x₁ → s.mints.supply t0 t1 > 0 → (s.mints.get a).get t0 t1 < s.mints.supply t0 t1 → a.gain o s sw2.apply <  a.gain o s (Swap.constprod.mkSwap φ s a t0 t1 x₁ sw0.exi h_enough).apply) := by
 
   intro h
   obtain ⟨x₁, ⟨h_enough, ⟨h_diff, h_max_gain'⟩⟩⟩ := h
@@ -400,8 +402,8 @@ theorem SX.fee.constprod.x_max_unique
   have h_max_gain := SX.fee.constprod.x_max_gain φ sw0 o h_equil hφ sw_max
 
   rcases Decidable.em (x₁ ≠ (x_max φ sw0 o h_equil hφ)) with ne | eq
-  . have h_contr₁ := h_max_gain' (x_max φ sw0 o h_equil hφ) sw_max ne.symm no_mints
-    have h_contr₂ := h_max_gain x₁ sw1 ne no_mints
+  . have h_contr₁ := h_max_gain' (x_max φ sw0 o h_equil hφ) sw_max ne.symm h_supply h_mints
+    have h_contr₂ := h_max_gain x₁ sw1 ne h_supply h_mints
     exact lt_asymm h_contr₁ h_contr₂
 
   . aesop

@@ -113,16 +113,21 @@ theorem SX.fee.z_factor_gt_1 (hφ : φ < 1):
   rw [PReal.lt_self_iff_mul_fact_lt_one]
   exact hφ
 
-noncomputable def Swap.fee.εφ  (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap sx sw0.apply a t0 t1 x₁) (hφ : φ < 1) (o: T → ℝ>0) : ℝ>0 :=
+noncomputable def SX.fee.εφ
+  (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap sx sw0.apply a t0 t1 x₁) (hφ : φ < 1) (o: T → ℝ>0)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1): ℝ>0 :=
   let r0 := AMMs.r0 s.amms t0 t1 sw0.exi;
 
-  (o t1) * ((SX.fee.z φ x₀ x₁ r0).sub 1 (by exact SX.fee.z_factor_gt_1 φ hφ)) * (sw0.y + sw1.y)
+  (o t1) * ((SX.fee.z φ x₀ x₁ r0).sub 1 (by exact SX.fee.z_factor_gt_1 φ hφ)) * (sw0.y + sw1.y) * (Swap.fee.frac_gain_Rpos s h_supply h_mint)
 
-noncomputable def Swap.fee.εφ_toReal (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap sx sw0.apply a t0 t1 x₁)
+noncomputable def SX.fee.εφ_toReal (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap sx sw0.apply a t0 t1 x₁)
   (hφ : φ < 1) (hr0 : r0 = AMMs.r0 s.amms t0 t1 (sw0.exi)) (hr1 : r1 = AMMs.r1 s.amms t0 t1 (sw0.exi))
-  (hα : α = sx x₀ r0 r1) (o: T → ℝ>0) :
-  (↑(εφ φ sw0 sw1 hφ o) : ℝ) =
-    ↑(o t1) * (↑(SX.fee.z φ x₀ x₁ r0) - 1) * (↑x₀ * ↑α + ↑(y sw1)) := by
+  (hα : α = sx x₀ r0 r1) (o: T → ℝ>0)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1):
+  (↑(εφ φ sw0 sw1 hφ o h_supply h_mint) : ℝ) =
+    ↑(o t1) * (↑(SX.fee.z φ x₀ x₁ r0) - 1) * (↑x₀ * ↑α + ↑(Swap.y sw1)) * ↑(Swap.fee.frac_gain_Rpos s h_supply h_mint) := by
 
       rw [hr0, hα, hr1]
       unfold εφ
@@ -132,37 +137,37 @@ noncomputable def Swap.fee.εφ_toReal (sw0: Swap sx s a t0 t1 x₀) (sw1: Swap 
 theorem sub_eq_iff_add_eq (a b c : ℝ) (h:  a - b = c) : a = b + c := by
   nlinarith!
 
-theorem Swap.fee.additive_gain
+theorem SX.fee.additive_gain
   (sw0: Swap sx s a t0 t1 x₀)
   (sw1: Swap sx sw0.apply a t0 t1 x₁)
   (sw2: Swap sx s a t0 t1 (x₀+x₁))
   (addi: SX.fee.extended_additivity φ sx)
   (out_b: SX.outputbound sx)
-  (no_mint : (s.mints.get a).get t0 t1 = 0)
+  (h_supply: s.mints.supply t0 t1 > 0)
+  (h_mint: (s.mints.get a).get t0 t1 < s.mints.supply t0 t1)
   (hφ : φ < 1)
   (o: T → ℝ>0):
-  a.gain o s sw2.apply = (a.gain o s sw0.apply) + (a.gain o sw0.apply sw1.apply) + ↑(εφ φ sw0 sw1 hφ o) := by
+  a.gain o s sw2.apply = (a.gain o s sw0.apply) + (a.gain o sw0.apply sw1.apply) + ↑(εφ φ sw0 sw1 hφ o h_supply h_mint) := by
 
     unfold SX.fee.extended_additivity at addi
     rw [add_assoc]
-    apply sub_eq_iff_add_eq (A.gain a o s (apply sw2))
+    apply sub_eq_iff_add_eq (A.gain a o s (Swap.apply sw2))
 
     conv =>
       lhs;
-      rw [Swap.fee.self_gain_no_mint_eq sw2 no_mint, Swap.fee.self_gain_no_mint_eq sw0 no_mint]
+      rw [Swap.self_gain_eq _ o, Swap.self_gain_eq _ o]
+      rw [←sub_mul]
       rw [sub_sub_eq_add_sub]
       rw [sub_eq_add_neg, sub_eq_add_neg]
       rw [add_comm, add_assoc, ←add_assoc,  ←add_assoc]
-      rw [add_comm _ (↑(y sw2) * ↑(o t1) : ℝ), ←sub_eq_add_neg _ (↑(y sw0) * ↑(o t1) : ℝ)]
+      rw [add_comm _ (↑(Swap.y sw2) * ↑(o t1) : ℝ), ←sub_eq_add_neg _ (↑(Swap.y sw0) * ↑(o t1) : ℝ)]
       rw [←sub_mul]
       rw [add_assoc, add_comm _ (↑x₀ * ↑(o t0) : ℝ), ←sub_eq_add_neg, ←sub_mul]
       rw [PReal.add_toReal, sub_add_eq_sub_sub, sub_self, zero_sub, neg_mul, ←sub_eq_add_neg]
-      unfold y rate
+      unfold Swap.y Swap.rate
 
     set r0 := AMMs.r0 s.amms t0 t1 (_ : AMMs.init s.amms t0 t1) with hr0
     set r1 := AMMs.r1 s.amms t0 t1 (_ : AMMs.init s.amms t0 t1) with hr1
-
-
 
     conv =>
       lhs;
@@ -174,7 +179,7 @@ theorem Swap.fee.additive_gain
     set β := sx x₁ (r0 + x₀) (PReal.sub r1 (x₀ * sx x₀ r0 r1) (_ : x₀ * sx x₀ r0 r1 < r1)) with hβ
 
     conv =>
-      lhs;
+      lhs; enter [1];
       rw [mul_comm _ (SX.fee.z φ x₀ x₁ r0), ←mul_div_assoc, mul_div_cancel]
       rw [left_distrib, sub_mul, PReal.add_toReal, right_distrib]
       rw [←sub_add_cancel ((↑(SX.fee.z φ x₀ x₁ r0 * (x₀ * α)) * ↑(o t1) + ↑(SX.fee.z φ x₀ x₁ r0 * (x₁ * β)) * ↑(o t1) - ↑(x₀ * α) * ↑(o t1) - ↑x₁ * ↑(o t0)): ℝ) ((x₁ * β) * ↑(o t1) : ℝ)]
@@ -184,24 +189,31 @@ theorem Swap.fee.additive_gain
       rw [add_comm _ (↑x₁ * ↑β * ↑(o t1) : ℝ), ←add_assoc _ (↑x₁ * ↑β * ↑(o t1): ℝ), add_comm _ (↑x₁ * ↑β * ↑(o t1) : ℝ), ← sub_eq_add_neg _ (↑x₁ * ↑(o t0) : ℝ)]
 
     have hh : β = Swap.rate sw1 := by
-        unfold rate
+        unfold Swap.rate
         rw [hβ]
         rw [Swap.r0_after_swap _, Swap.r1_after_swap _]
+
+    set G := (↑x₁: ℝ) * ↑β * ↑(o t1) - ↑x₁ * (↑(o t0) : ℝ) with hg
 
     conv =>
       lhs;
       rw [hh]
-      rw [← PReal.mul_toReal x₁, ←Swap.y, ←Swap.fee.self_gain_no_mint_eq sw1 no_mint _]
-      rw [add_comm (A.gain _ _ _ _)]
+      rw [← PReal.mul_toReal x₁, ←Swap.y]
+      rw [add_comm G]
       repeat rw [←add_assoc, add_neg_add_eq_add_sub, add_neg_add_eq_add_sub]
       rw [←right_distrib, ←sub_mul, ←sub_mul]
       conv in (↑(SX.fee.z φ x₀ x₁ r0 * (x₀ * α)) : ℝ) =>
         rw [PReal.mul_toReal]
-      conv in (↑(SX.fee.z φ x₀ x₁ r0 * y sw1) : ℝ) =>
+      conv in (↑(SX.fee.z φ x₀ x₁ r0 * Swap.y sw1) : ℝ) =>
         rw [PReal.mul_toReal]
       repeat conv in (↑(x₀ * α) : ℝ) =>
         rw [PReal.mul_toReal]
       rw [← left_distrib (↑(SX.fee.z φ x₀ x₁ r0) : ℝ)]
-      rw [add_sub_sub_eq_sub_add, mul_comm (↑(SX.fee.z φ x₀ x₁ r0): ℝ) _, ←mul_sub_one, mul_comm, mul_comm ((↑x₀ * ↑α + ↑(y sw1)) : ℝ), ←mul_assoc]
+      rw [add_sub_sub_eq_sub_add, mul_comm (↑(SX.fee.z φ x₀ x₁ r0): ℝ) _, ←mul_sub_one, mul_comm ((↑x₀ * ↑α + ↑(Swap.y sw1)) : ℝ)]
 
     rw [add_comm, εφ_toReal φ sw0 sw1 hφ hr0 hr1 hα]
+    rw [right_distrib, hg, hh, ←PReal.mul_toReal, ←Swap.y]
+    rw [←Swap.mints sw0, ←Swap.self_gain_eq sw1 o]
+
+    rw [mul_rotate _ _ (↑(o t1):  ℝ), mul_rotate _ (↑(o t1):  ℝ) _]
+    rw [Swap.fee.frac_gain_Rpos_toReal, ←Swap.mints sw0]
